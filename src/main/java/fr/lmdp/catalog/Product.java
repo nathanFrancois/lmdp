@@ -1,11 +1,13 @@
 package fr.lmdp.catalog;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 
 /**
  * Représente un objet en verre déjà gravé, proposé tel quel à la vente.
@@ -34,8 +36,15 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
-    @Column(name = "image_filename", length = 255)
-    private String imageFilename;
+    // byte[] est chargé avec le produit et correspond à BYTEA dans PostgreSQL.
+    // Ne pas utiliser @Lob : PostgreSQL le mapperait sur un OID, pas sur BYTEA.
+    @Column(name = "image_data")
+    @JsonIgnore
+    private byte[] imageData;
+
+    @Column(name = "image_content_type", length = 100)
+    @JsonIgnore
+    private String imageContentType;
 
     protected Product() {
         // Requis par JPA/Hibernate.
@@ -94,11 +103,28 @@ public class Product {
         this.stock = stock;
     }
 
-    public String getImageFilename() {
-        return imageFilename;
+    public byte[] getImageData() {
+        return imageData;
     }
 
-    public void setImageFilename(String imageFilename) {
-        this.imageFilename = imageFilename;
+    public String getImageContentType() {
+        return imageContentType;
+    }
+
+    public void setImage(byte[] imageData, String imageContentType) {
+        this.imageData = imageData;
+        this.imageContentType = imageContentType;
+    }
+
+    @JsonIgnore
+    public boolean isHasImage() {
+        return imageData != null && imageData.length > 0 && imageContentType != null;
+    }
+
+    /** Image intégrée au produit retourné, sans requête HTTP supplémentaire. */
+    public String getImageUrl() {
+        return isHasImage()
+                ? "data:" + imageContentType + ";base64," + Base64.getEncoder().encodeToString(imageData)
+                : null;
     }
 }

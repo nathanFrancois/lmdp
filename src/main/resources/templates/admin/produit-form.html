@@ -54,9 +54,9 @@
             panier (elle est indiquée « en rupture de stock »).
         </p>
 
-        <div th:if="${mode == 'edit'} and ${currentImage != null}" class="admin-current-image">
+        <div th:if="${mode == 'edit' and imageUrl != null}" class="admin-current-image">
             <p>Photo actuelle :</p>
-            <img th:src="@{'/uploads/' + ${currentImage}}" alt="Photo actuelle de la création" class="admin-thumb-large">
+            <img th:src="${imageUrl}" alt="Photo actuelle de la création" class="admin-thumb-large">
         </div>
 
         <label for="image">Photo de la création</label>
@@ -64,8 +64,7 @@
         <p class="admin-field-hint">Formats acceptés : JPG, PNG, GIF, WEBP. Laissez vide pour conserver la photo actuelle.</p>
 
         <div class="admin-checkbox-row">
-            <input type="hidden" name="available" value="false">
-            <input type="checkbox" id="available" name="available" value="true" th:checked="*{available}">
+            <input type="checkbox" id="available" th:field="*{available}">
             <label for="available">Visible en vente sur le site</label>
         </div>
         <p class="admin-field-hint">

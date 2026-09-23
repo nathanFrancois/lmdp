@@ -1,6 +1,7 @@
 package fr.lmdp.web;
 
 import fr.lmdp.security.AdminUser;
+
 import fr.lmdp.security.AdminUserRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

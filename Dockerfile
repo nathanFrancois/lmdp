@@ -18,9 +18,11 @@ WORKDIR /app
 
 # Exécution avec un utilisateur non-root
 RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
 
 COPY --from=build /app/target/*.jar app.jar
+RUN chown spring:spring /app/app.jar
+
+USER spring:spring
 
 # Render fournit dynamiquement la variable PORT ; l'appli doit écouter dessus.
 ENV PORT=8080

@@ -37,9 +37,3 @@ cawl:
   admin:
     username: ${CAWL_ADMIN_USERNAME:admin}
     password: ${CAWL_ADMIN_PASSWORD:}
-
-  # Dossier (hors classpath) où sont stockées les photos de produits envoyées
-  # depuis le back-office, servies ensuite sous /uploads/**.
-  uploads-dir: ${CAWL_UPLOADS_DIR:./data/uploads/products}
-
-

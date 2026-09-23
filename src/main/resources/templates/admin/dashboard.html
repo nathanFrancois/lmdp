@@ -49,9 +49,9 @@
         <tbody>
         <tr th:each="product : ${products}">
             <td>
-                <img th:if="${product.imageFilename != null}" th:src="@{'/uploads/' + ${product.imageFilename}}"
+                <img th:if="${product.hasImage}" th:src="${product.imageUrl}"
                      alt="" class="admin-thumb">
-                <span th:if="${product.imageFilename == null}">—</span>
+                <span th:if="${not product.hasImage}">—</span>
             </td>
             <td>
                 <span th:text="${product.name}">Nom</span>

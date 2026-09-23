@@ -51,12 +51,30 @@ Seul un événement signé avec statut `CAPTURED`, la bonne référence, le bon 
 
 ## Catalogue produits & base de données
 
-Le catalogue (`fr.example.cawl.catalog`) est persisté en base de données via Spring Data JPA. Le schéma est entièrement géré par **Flyway** (`src/main/resources/db/migration`) : Hibernate n'a que le droit de valider le schéma (`ddl-auto=validate`), jamais de le modifier.
+Le catalogue (`fr.lmdp.catalog`) est persisté en base de données via Spring Data JPA. Le schéma initial est géré par **Flyway**, dans un seul fichier : `src/main/resources/db/migration/V1__init.sql`. Hibernate ne fait que valider le schéma (`ddl-auto=validate`).
 
 - **Développement** (profil par défaut) : base **H2** embarquée dans un fichier (`./data/cawl.mv.db`), aucune installation requise.
 - **Production** (profil `prod`) : base **PostgreSQL**, configurée dans `application-prod.yml`.
 
-Les mêmes scripts SQL de migration s'appliquent aux deux moteurs (types standards : `VARCHAR`, `DECIMAL`, `BOOLEAN`, `TIMESTAMP`).
+Le même script s'applique aux deux moteurs. Il crée `products` (stock et image binaire `BYTEA` inclus) et `admin_users`, sans aucun produit de démonstration.
+
+### Premier compte administrateur
+
+Après la création des tables, `AdminUserSeeder` crée automatiquement un compte si la table `admin_users` est vide :
+
+- `CAWL_ADMIN_USERNAME` : identifiant, `admin` par défaut.
+- `CAWL_ADMIN_PASSWORD` : mot de passe à définir sur Render. Seul son hash BCrypt est enregistré en base.
+- Si le mot de passe est absent, un mot de passe temporaire est généré et affiché une seule fois dans les logs. Connexion sur `/admin/login`.
+
+Les démarrages suivants ne recréent pas le compte et ne changent pas son mot de passe. Aucun secret n'est inscrit dans le SQL.
+
+### Bases créées avec les anciennes migrations V1–V6
+
+La consolidation en une seule V1 est prévue pour une **base neuve**. Elle n'est pas compatible avec l'ancien historique Flyway (checksums et versions déjà appliquées).
+
+Sauvegarder les données avant toute remise à zéro. En local, application arrêtée, conserver une copie de `data/cawl.mv.db`, puis utiliser une base H2 neuve. Sur Render, utiliser une base PostgreSQL neuve, ou réinitialiser volontairement la base existante uniquement si ses données peuvent être perdues. La remise à zéro efface produits, photos et comptes ; le compte admin sera recréé au démarrage.
+
+Ne pas supprimer seulement `flyway_schema_history` ni utiliser `repair` comme remplacement d'une migration des données. Si des données doivent être conservées, garder l'ancien historique jusqu'à organiser leur transfert. Aucune base existante n'est automatiquement effacée par cette modification.
 
 ### Démarrer en production avec PostgreSQL
 
@@ -76,10 +94,10 @@ export DB_PASSWORD='mot-de-passe-securise'
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
 # ou, avec le jar packagé :
-java -jar target/cawl-demo-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+java -jar target/lmdp-website-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
-Au démarrage, Flyway se connecte à PostgreSQL et applique automatiquement les migrations manquantes (création de la table `products`, jeu de données de démonstration, etc.).
+Sur Render, définir `SPRING_PROFILES_ACTIVE=prod`. Au premier démarrage sur une base vide, Flyway applique `V1__init.sql`, puis le compte administrateur est créé. Le catalogue démarre vide.
 
 ### API du catalogue
 
@@ -109,10 +127,10 @@ Les webhooks passent par le vérificateur officiel du SDK avant traitement. Les 
 
 ## Tests
 
-Validation locale effectuée : compilation réussie et 6 tests réussis. Aucun paiement CAWL distant exécuté, faute d’identifiants de compte.
+Les tests couvrent les paiements, les images des produits et l'initialisation d'une base vide avec un compte administrateur. Les tests de base utilisent H2 en mémoire, sans modifier `data/cawl.mv.db`. Aucun paiement CAWL distant n'est exécuté.
 
 ```bash
-mvn test
+mvn clean test
 mvn package
 ```
 

@@ -63,8 +63,8 @@
                         var quantity = cart[p.id];
                         var lineTotal = p.price * quantity;
                         total += lineTotal;
-                        var imageHtml = p.imageFilename
-                            ? '<img src="/uploads/' + p.imageFilename + '" alt="' + p.name + '" class="product-photo">'
+                        var imageHtml = p.imageUrl
+                            ? '<img src="' + p.imageUrl + '" alt="' + p.name + '" class="product-photo">'
                             : '<div class="product-image-placeholder" role="img" aria-label="Photo non disponible pour ' + p.name + '"><span aria-hidden="true">Photo à venir</span></div>';
                         html += '<li class="cart-line">'
                             + '<div class="cart-line-image">' + imageHtml + '</div>'

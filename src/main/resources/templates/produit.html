@@ -29,9 +29,9 @@
         <div class="container product-detail-inner">
 
             <div class="product-detail-image">
-                <img th:if="${product.imageFilename != null}" th:src="@{'/uploads/' + ${product.imageFilename}}"
+                <img th:if="${product.hasImage}" th:src="${product.imageUrl}"
                      th:alt="${product.name}" class="product-photo product-photo--large">
-                <div th:if="${product.imageFilename == null}" class="product-image-placeholder product-image-placeholder--large" role="img"
+                <div th:if="${not product.hasImage}" class="product-image-placeholder product-image-placeholder--large" role="img"
                      th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">
                     <span aria-hidden="true">Photo à venir</span>
                 </div>
