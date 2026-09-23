@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title th:text="${mode == 'create'} ? 'Nouveau produit — Administration' : 'Modifier le produit — Administration'">
+        Produit — Administration
+    </title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+    <div class="container admin-header-inner">
+        <a href="/admin" class="brand-link">
+            <img src="/images/logo_secondaire.png" alt="" class="admin-header-logo">
+            <span>Administration</span>
+        </a>
+    </div>
+</header>
+
+<main class="container admin-main">
+    <p><a href="/admin" class="link-arrow">← Retour au catalogue</a></p>
+    <h1 class="section-title" th:text="${mode == 'create'} ? 'Nouveau produit' : 'Modifier le produit'">Produit</h1>
+
+    <form th:action="${mode == 'create'} ? @{/admin/produits} : @{'/admin/produits/' + ${productId}}"
+          th:object="${productForm}" method="post" enctype="multipart/form-data" class="admin-form">
+
+        <div th:if="${mode == 'create'}">
+            <label for="id">Identifiant (facultatif, généré automatiquement sinon)</label>
+            <input type="text" id="id" th:field="*{id}">
+        </div>
+
+        <label for="name">Nom</label>
+        <input type="text" id="name" th:field="*{name}" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}" rows="4" required></textarea>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+
+        <label for="price">Prix (€)</label>
+        <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+
+        <label for="stock">Stock disponible</label>
+        <input type="number" id="stock" th:field="*{stock}" step="1" min="0" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></p>
+        <p class="admin-field-hint">
+            Si le stock atteint 0, la création reste visible sur le site mais ne pourra plus être ajoutée au
+            panier (elle est indiquée « en rupture de stock »).
+        </p>
+
+        <div th:if="${mode == 'edit'} and ${currentImage != null}" class="admin-current-image">
+            <p>Photo actuelle :</p>
+            <img th:src="@{'/uploads/' + ${currentImage}}" alt="Photo actuelle de la création" class="admin-thumb-large">
+        </div>
+
+        <label for="image">Photo de la création</label>
+        <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
+        <p class="admin-field-hint">Formats acceptés : JPG, PNG, GIF, WEBP. Laissez vide pour conserver la photo actuelle.</p>
+
+        <div class="admin-checkbox-row">
+            <input type="hidden" name="available" value="false">
+            <input type="checkbox" id="available" name="available" value="true" th:checked="*{available}">
+            <label for="available">Visible en vente sur le site</label>
+        </div>
+        <p class="admin-field-hint">
+            Si décoché, cette création disparaît entièrement du site public (catalogue et fiche produit),
+            même si elle a du stock.
+        </p>
+
+        <button type="submit" class="btn btn-primary" th:text="${mode == 'create'} ? 'Créer le produit' : 'Enregistrer les modifications'">
+            Enregistrer
+        </button>
+    </form>
+</main>
+
+</body>
+</html>
+

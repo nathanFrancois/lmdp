@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Votre panier — Les Merveilles de Philomène</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='panier')}"></div>
+
+<main id="contenu">
+
+    <section class="page-intro">
+        <div class="container">
+            <h1 class="section-title">Votre panier</h1>
+        </div>
+    </section>
+
+    <section class="cart-section">
+        <div class="container">
+            <noscript>
+                <p class="unavailable-note">
+                    Le panier nécessite JavaScript activé dans votre navigateur pour fonctionner.
+                </p>
+            </noscript>
+            <div id="cart-app" th:attr="data-products-url=@{/api/produits}">
+                <p>Chargement de votre panier…</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+

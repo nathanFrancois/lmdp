@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Connexion administration — Les Merveilles de Philomène</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-login-body">
+
+<main class="admin-login-wrapper">
+    <div class="admin-login-card">
+        <img src="/images/logo_principal.png" alt="Les Merveilles de Philomène" class="admin-login-logo">
+        <h1 class="section-title">Espace administration</h1>
+
+        <p class="admin-alert admin-alert--error" th:if="${param.error}">
+            Identifiant ou mot de passe incorrect.
+        </p>
+        <p class="admin-alert admin-alert--success" th:if="${param.logout}">
+            Vous avez été déconnecté(e).
+        </p>
+
+        <form th:action="@{/admin/login}" method="post" class="admin-form">
+            <label for="username">Identifiant</label>
+            <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
+

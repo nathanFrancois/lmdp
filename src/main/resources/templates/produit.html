@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.name} + ' — Les Merveilles de Philomène'">Création — Les Merveilles de Philomène</title>
+    <meta name="description" th:content="${product.description}">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='creations')}"></div>
+
+<main id="contenu">
+
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <div class="container">
+            <ol>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/creations">Créations</a></li>
+                <li aria-current="page" th:text="${product.name}">Nom de la création</li>
+            </ol>
+        </div>
+    </nav>
+
+    <section class="product-detail">
+        <div class="container product-detail-inner">
+
+            <div class="product-detail-image">
+                <img th:if="${product.imageFilename != null}" th:src="@{'/uploads/' + ${product.imageFilename}}"
+                     th:alt="${product.name}" class="product-photo product-photo--large">
+                <div th:if="${product.imageFilename == null}" class="product-image-placeholder product-image-placeholder--large" role="img"
+                     th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">
+                    <span aria-hidden="true">Photo à venir</span>
+                </div>
+            </div>
+
+            <div class="product-detail-info">
+                <h1 class="section-title" th:text="${product.name}">Nom de la création</h1>
+
+                <p class="product-availability"
+                   th:classappend="${product.stock > 0} ? 'is-available' : 'is-unavailable'"
+                   th:text="${product.stock > 0} ? 'En stock' : 'Rupture de stock'">
+                    En stock
+                </p>
+
+                <p class="product-detail-price">
+                    <span th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}">0,00</span>&nbsp;€
+                </p>
+
+                <p class="product-detail-description" th:text="${product.description}">
+                    Description du motif et de l'objet.
+                </p>
+
+                <!-- Seul endroit du site où l'ajout au panier est possible -->
+                <div th:if="${product.stock > 0}" class="add-to-cart-form add-to-cart-form--detail">
+                    <label for="quantity">Quantité</label>
+                    <input type="number" id="quantity" min="1" value="1" class="qty-input">
+                    <button type="button" id="add-to-cart-btn" class="btn btn-primary"
+                            th:attr="data-product-id=${product.id}">
+                        Ajouter au panier
+                    </button>
+                </div>
+
+                <p th:if="${product.stock <= 0}" class="unavailable-note">
+                    Cette création est actuellement en rupture de stock.
+                </p>
+
+                <p><a href="/creations" class="link-arrow">← Retour aux créations</a></p>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+

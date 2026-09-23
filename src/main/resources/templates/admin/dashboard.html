@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Administration du catalogue — Les Merveilles de Philomène</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+    <div class="container admin-header-inner">
+        <a href="/admin" class="brand-link">
+            <img src="/images/logo_secondaire.png" alt="" class="admin-header-logo">
+            <span>Administration</span>
+        </a>
+        <div class="admin-header-actions">
+            <span class="admin-user" sec:authentication="name">admin</span>
+            <a href="/admin/mot-de-passe" class="btn btn-outline btn-small">Changer mon mot de passe</a>
+            <form th:action="@{/admin/logout}" method="post" class="admin-inline-form">
+                <button type="submit" class="btn btn-outline btn-small">Déconnexion</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="container admin-main">
+    <div class="admin-page-title">
+        <h1 class="section-title">Catalogue des créations</h1>
+        <a href="/admin/produits/nouveau" class="btn btn-primary">+ Nouveau produit</a>
+    </div>
+
+    <p class="admin-alert admin-alert--success" th:if="${message}" th:text="${message}"></p>
+
+    <table class="admin-table" th:if="${not #lists.isEmpty(products)}">
+        <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Nom</th>
+            <th>Prix</th>
+            <th>Stock</th>
+            <th>Visible sur le site</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td>
+                <img th:if="${product.imageFilename != null}" th:src="@{'/uploads/' + ${product.imageFilename}}"
+                     alt="" class="admin-thumb">
+                <span th:if="${product.imageFilename == null}">—</span>
+            </td>
+            <td>
+                <span th:text="${product.name}">Nom</span>
+                <br><small th:text="${product.id}">identifiant</small>
+            </td>
+            <td th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+            <td th:text="${product.stock}">0</td>
+            <td>
+                <span th:classappend="${product.available} ? 'is-available' : 'is-unavailable'"
+                      th:text="${product.available} ? 'Oui' : 'Non'">Oui</span>
+            </td>
+            <td class="admin-table-actions">
+                <a th:href="@{'/admin/produits/' + ${product.id} + '/modifier'}" class="btn btn-outline btn-small">Modifier</a>
+                <form th:action="@{'/admin/produits/' + ${product.id} + '/supprimer'}" method="post" class="admin-inline-form"
+                      onsubmit="return confirm('Supprimer définitivement ce produit ?');">
+                    <button type="submit" class="btn btn-danger btn-small">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${#lists.isEmpty(products)}">Aucun produit pour le moment.</p>
+</main>
+
+</body>
+</html>
+

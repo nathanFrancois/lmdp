@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Les Merveilles de Philomène — Le verre, délicatement gravé à la main</title>
+    <meta name="description"
+          content="Les Merveilles de Philomène : objets en verre gravés à la main, à offrir ou à s'offrir. Découvrez les créations disponibles.">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='accueil')}"></div>
+
+<main id="contenu">
+
+    <!-- Introduction -->
+    <section class="hero">
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <h1 class="section-title">Le verre, délicatement gravé à la main</h1>
+                <p class="hero-lead">
+                    Bienvenue dans l'univers des Merveilles de Philomène : des objets en verre gravés à la main,
+                    à offrir ou à s'offrir. Découvrez les créations disponibles et choisissez celle dont le motif
+                    vous plaît : chaque objet est proposé tel qu'il a été imaginé et gravé.
+                </p>
+                <a href="/creations" class="btn btn-primary">Découvrir les créations</a>
+            </div>
+            <div class="hero-visual">
+                <img src="/images/accueil.png"
+                     alt="Aperçu du verre gravé à la main, dans l'esprit des créations de la boutique"
+                     class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Quatre façons de faire graver une merveille -->
+    <section class="value-props" aria-labelledby="value-props-title">
+        <div class="container">
+            <h2 id="value-props-title" class="section-title">Quelle merveille est faite pour vous ?</h2>
+
+            <ul class="value-grid">
+                <li class="value-card">
+                    <img class="value-image" src="/images/merveilles.png"
+                         alt="Objets en verre gravés à la main, exemples de créations originales">
+                    <div class="value-card-body">
+                        <h3 class="value-title">Les petites merveilles</h3>
+                        <p class="value-subtitle">Mes créations originales</p>
+                        <p class="value-description">
+                            Des objets que j'ai imaginés, dessinés et gravés moi-même. Des pièces uniques ou en
+                            petites séries, pensées et réalisées quotidiennement.
+                        </p>
+                        <a href="/creations" class="value-btn">Découvrir les créations</a>
+                    </div>
+                </li>
+
+                <li class="value-card">
+                    <img class="value-image" src="/images/claudine.png"
+                         alt="Un objet en verre associé à une idée personnelle, prêt à être personnalisé">
+                    <div class="value-card-body">
+                        <h3 class="value-title">Claudine et Vous</h3>
+                        <p class="value-subtitle">Votre idée, ma gravure</p>
+                        <p class="value-description">
+                            Vous choisissez un objet parmi mes créations et vous avez une idée bien à vous : un
+                            dessin, une illustration, un souvenir.
+                        </p>
+                        <a href="#" class="value-btn">Personnaliser un objet</a>
+                    </div>
+                </li>
+
+                <li class="value-card">
+                    <img class="value-image" src="/images/virginie.png"
+                         alt="Un objet personnel, verre ou miroir, apporté pour être gravé">
+                    <div class="value-card-body">
+                        <h3 class="value-title">Entre les mains de Virginie</h3>
+                        <p class="value-subtitle">Votre objet, mon savoir-faire</p>
+                        <p class="value-description">
+                            Vous possédez déjà un objet : un verre, un miroir, une bouteille. Vous venez avec votre
+                            objet et votre idée, et je lui offre une nouvelle histoire sous ma pointe.
+                        </p>
+                        <a href="#" class="value-btn">Faire graver mon objet</a>
+                    </div>
+                </li>
+
+                <li class="value-card">
+                    <img class="value-image" src="/images/juliette.png"
+                         alt="Projet événementiel sur mesure : mariage, restaurant ou entreprise">
+                    <div class="value-card-body">
+                        <h3 class="value-title">Juliette en grand</h3>
+                        <p class="value-subtitle">Vos projets sur mesure</p>
+                        <p class="value-description">
+                            Un mariage, un événement, un restaurant, un hôtel, une entreprise ? À partir de 10
+                            pièces, imaginons ensemble un projet cohérent pensé spécialement pour votre lieu ou
+                            événement.
+                        </p>
+                        <a href="#" class="value-btn">Parlons de votre projet</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Savoir-faire -->
+    <section class="craft" aria-labelledby="craft-title">
+        <div class="container">
+            <h2 id="craft-title" class="section-title">La gravure à la main, geste après geste</h2>
+            <p>
+                Chaque objet est gravé à la main, trait après trait, avec une attention portée aux détails du motif.
+                Cette approche donne à chaque pièce un léger caractère qui lui est propre, hérité du geste de la main
+                qui l'a gravée.
+            </p>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+
+
+

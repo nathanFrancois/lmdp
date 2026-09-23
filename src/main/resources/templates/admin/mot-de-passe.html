@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Changer mon mot de passe — Administration</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+    <div class="container admin-header-inner">
+        <a href="/admin" class="brand-link">
+            <img src="/images/logo_secondaire.png" alt="" class="admin-header-logo">
+            <span>Administration</span>
+        </a>
+    </div>
+</header>
+
+<main class="container admin-main">
+    <p><a href="/admin" class="link-arrow">← Retour au catalogue</a></p>
+    <h1 class="section-title">Changer mon mot de passe</h1>
+
+    <form th:action="@{/admin/mot-de-passe}" th:object="${passwordForm}" method="post" class="admin-form">
+        <label for="currentPassword">Mot de passe actuel</label>
+        <input type="password" id="currentPassword" th:field="*{currentPassword}" autocomplete="current-password" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></p>
+
+        <label for="newPassword">Nouveau mot de passe</label>
+        <input type="password" id="newPassword" th:field="*{newPassword}" autocomplete="new-password" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></p>
+
+        <label for="confirmPassword">Confirmer le nouveau mot de passe</label>
+        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" autocomplete="new-password" required>
+        <p class="admin-field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+
+        <button type="submit" class="btn btn-primary">Mettre à jour le mot de passe</button>
+    </form>
+</main>
+
+</body>
+</html>
+

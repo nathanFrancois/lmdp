@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Créations — Les Merveilles de Philomène</title>
+    <meta name="description" content="Toutes les créations en verre gravé à la main des Merveilles de Philomène.">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='creations')}"></div>
+
+<main id="contenu">
+    <section class="page-intro">
+        <div class="container">
+            <h1 class="section-title">Nos créations</h1>
+            <p class="section-note">
+                Retrouvez ici les créations disponibles. Les objets sont déjà gravés à la main et proposés avec les
+                motifs présentés, sans personnalisation.
+            </p>
+            <p class="demo-disclaimer">
+                Les produits ci-dessous sont des exemples de démonstration : visuels, descriptions et prix ne
+                constituent pas encore un catalogue réel.
+            </p>
+        </div>
+    </section>
+
+    <section class="catalog" aria-label="Liste des créations">
+        <div class="container">
+            <ul class="product-grid product-grid--catalog">
+                <li class="product-card" th:each="product : ${products}">
+                    <a th:href="@{'/creations/' + ${product.id}}" class="product-card-link">
+                        <img th:if="${product.imageFilename != null}" th:src="@{'/uploads/' + ${product.imageFilename}}"
+                             th:alt="${product.name}" class="product-photo">
+                        <div th:if="${product.imageFilename == null}" class="product-image-placeholder" role="img"
+                             th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">
+                            <span aria-hidden="true">Photo à venir</span>
+                        </div>
+                        <h2 class="product-name" th:text="${product.name}">Nom de la création</h2>
+                    </a>
+                    <p class="product-description" th:text="${product.description}">Description du motif.</p>
+                    <p class="product-price">
+                        <span th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}">0,00</span>&nbsp;€
+                    </p>
+                    <p class="product-availability"
+                       th:classappend="${product.stock > 0} ? 'is-available' : 'is-unavailable'"
+                       th:text="${product.stock > 0} ? 'En stock' : 'Rupture de stock'">
+                        En stock
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+
+
+

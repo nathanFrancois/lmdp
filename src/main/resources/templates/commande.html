@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Passer commande — Les Merveilles de Philomène</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='panier')}"></div>
+
+<main id="contenu">
+    <section class="page-intro">
+        <div class="container">
+            <h1 class="section-title">Passer commande</h1>
+            <p class="section-note">
+                Cette étape n'est pas encore disponible : la commande et le paiement en ligne arriveront dans une
+                prochaine version du site. Merci de votre patience !
+            </p>
+            <p><a href="/panier" class="link-arrow">← Retour au panier</a></p>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+
