@@ -35,6 +35,11 @@
                            th:classappend="${activePage == 'creations'} ? ' is-active'"
                            th:attr="aria-current=${activePage == 'creations'} ? 'page' : null">Créations</a>
                     </li>
+                    <li>
+                        <a href="/atelier"
+                           th:classappend="${activePage == 'atelier'} ? ' is-active'"
+                           th:attr="aria-current=${activePage == 'atelier'} ? 'page' : null">L'atelier</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -69,6 +74,7 @@
             <ul>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/creations">Créations</a></li>
+                <li><a href="/atelier">L'atelier</a></li>
                 <li><a href="/panier">Panier</a></li>
             </ul>
         </nav>

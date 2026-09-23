@@ -28,6 +28,12 @@ public class PageController {
         return "home";
     }
 
+    @GetMapping("/atelier")
+    public String atelier(Model model) {
+        model.addAttribute("activePage", "atelier");
+        return "atelier";
+    }
+
     @GetMapping("/creations")
     public String creations(Model model) {
         model.addAttribute("activePage", "creations");

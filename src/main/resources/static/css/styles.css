@@ -37,15 +37,17 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
 
-  /* Fleur en filigrane, fixe en bas à droite, très estompée derrière le contenu. */
+  /* Fleurs en filigrane, très estompées derrière le contenu :
+     une à droite en bas de page (fixe), une autre à gauche, haut de page. */
   background-color: var(--color-cream);
   background-image:
     linear-gradient(rgba(234, 238, 221, 0.93), rgba(234, 238, 221, 0.93)),
+    url('/images/fleur_2.png'),
     url('/images/fleur_fond.png');
-  background-repeat: no-repeat, no-repeat;
-  background-position: left top, right bottom;
-  background-size: cover, min(480px, 60vw);
-  background-attachment: scroll, fixed;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: left top, 15% 25%, right bottom;
+  background-size: cover, min(420px, 55vw), min(480px, 60vw);
+  background-attachment: scroll, fixed, fixed;
 }
 
 h1, h2, h3 {
@@ -314,7 +316,6 @@ button:focus-visible,
    Sections génériques
    ========================================================= */
 .selection,
-.craft,
 .page-intro,
 .catalog {
   padding: 2.5rem 0;
@@ -423,6 +424,115 @@ button:focus-visible,
 }
 
 /* =========================================================
+   Mon atelier — bloc de présentation (accueil)
+   Collage de deux photos avec un aplat de couleur en arrière-plan,
+   texte à droite et bouton d'appel à l'action vers la page dédiée.
+   ========================================================= */
+.atelier-teaser {
+  padding: 4.5rem 0;
+}
+
+.atelier-teaser-inner {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.atelier-teaser-visual {
+  position: relative;
+  padding: 1.25rem 2.25rem 2.25rem 0.5rem;
+}
+
+.atelier-teaser-frame {
+  position: absolute;
+  inset: 0 2.25rem 1.5rem 0;
+  background: var(--color-olive);
+  border-radius: var(--radius-soft);
+  transform: rotate(-3deg);
+  z-index: 0;
+}
+
+.atelier-teaser-frame::after {
+  content: "";
+  position: absolute;
+  top: -0.6rem;
+  right: -0.6rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--color-lemon);
+  border-radius: 50%;
+}
+
+.atelier-teaser-image {
+  display: block;
+  border-radius: calc(var(--radius-soft) - 4px);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+}
+
+.atelier-teaser-image--main {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transform: rotate(-1.5deg);
+  z-index: 1;
+}
+
+.atelier-teaser-image--accent {
+  width: 46%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  position: absolute;
+  right: -0.5rem;
+  bottom: -1.75rem;
+  border: 6px solid var(--color-cream);
+  transform: rotate(4deg);
+  z-index: 2;
+}
+
+.atelier-teaser-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.atelier-teaser-eyebrow {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--color-olive-dark);
+}
+
+.atelier-teaser-text .section-title {
+  margin: 0;
+}
+
+.atelier-teaser-lead {
+  max-width: 52ch;
+}
+
+.atelier-teaser-text .btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 860px) {
+  .atelier-teaser-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .atelier-teaser-visual {
+    order: -1;
+    padding: 1.5rem 2.5rem 3rem 1rem;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* =========================================================
    Grille de produits / cartes
    ========================================================= */
 .product-grid {
@@ -430,8 +540,12 @@ button:focus-visible,
   margin: 1.5rem 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  /* auto-fill (et non auto-fit) : les colonnes vides restantes ne sont pas
+     réparties entre les cartes existantes, qui gardent donc toujours la
+     même taille, qu'il y ait 1 ou 8 produits. */
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 1.5rem;
+  justify-content: start;
 }
 
 .product-card {
@@ -443,6 +557,15 @@ button:focus-visible,
   flex-direction: column;
   gap: 0.5rem;
   box-shadow: var(--shadow-soft);
+  max-width: 100%;
+}
+
+.product-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--radius-soft) - 6px);
+  display: block;
 }
 
 .product-image-placeholder {
@@ -712,6 +835,92 @@ button:focus-visible,
 .btn-outline:focus-visible {
   background: var(--color-forest);
   color: var(--color-cream);
+}
+
+/* =========================================================
+   Points forts (accueil)
+   Section claire, intégrée au flux de la page (et non un
+   bandeau sombre qui ferait doublon visuel avec le pied de
+   page). Icônes fournies en PNG sur fond blanc, neutralisées
+   via mix-blend-mode: multiply pour s'intégrer à la carte.
+   ========================================================= */
+.highlights {
+  padding: 3rem 0 3.5rem;
+}
+
+.highlights-eyebrow {
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--color-olive-dark);
+}
+
+.highlights-title {
+  text-align: center;
+  margin: 0.35rem 0 2.25rem;
+}
+
+.highlights-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.highlight-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.9rem;
+  padding: 1.5rem 1rem;
+  background: var(--color-cream);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.highlight-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(58, 74, 46, 0.12), 0 14px 30px rgba(58, 74, 46, 0.12);
+}
+
+.highlight-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--color-cream-dark);
+  border: 2px solid var(--color-olive);
+}
+
+.highlight-icon-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.highlight-label {
+  margin: 0;
+  color: var(--color-forest);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 720px) {
+  .highlights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* =========================================================
