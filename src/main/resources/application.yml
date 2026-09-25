@@ -23,13 +23,21 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+shop:
+  # URL publique du site : sert à construire l'URL de retour après paiement.
+  base-url: ${SHOP_BASE_URL:http://localhost:8077}
+  # Frais appliqués uniquement si le client choisit la livraison.
+  shipping-fee: ${SHOP_SHIPPING_FEE:6.90}
+
 cawl:
-  pspid: ${CAWL_PSPID}
-  api-key: ${CAWL_API_KEY}
-  api-secret: ${CAWL_API_SECRET}
-  webhook-key: ${CAWL_WEBHOOK_KEY}
-  webhook-secret: ${CAWL_WEBHOOK_SECRET}
-  return-url: ${CAWL_RETURN_URL:http://localhost:8080/payment-return}
+  pspid: ${CAWL_PSPID:lmdp}
+  api-key: ${CAWL_API_KEY:}
+  api-secret: ${CAWL_API_SECRET:}
+  webhook-key: ${CAWL_WEBHOOK_KEY:}
+  webhook-secret: ${CAWL_WEBHOOK_SECRET:}
+  # Préproduction par défaut ; en production : https://payment.cawl-solutions.fr/
+  api-endpoint: ${CAWL_API_ENDPOINT:https://payment.preprod.cawl-solutions.fr}
+  integrator: ${CAWL_INTEGRATOR:lmdp}
 
   # Compte administrateur du back-office (/admin), créé automatiquement au premier
   # démarrage si la table admin_users est vide. Si le mot de passe n'est pas fourni,

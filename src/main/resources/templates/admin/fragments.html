@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head><title>Fragments d'administration</title></head>
+<body>
+
+<!-- En-tête commun aux pages du back-office. -->
+<header th:fragment="header" class="admin-header">
+    <div class="container admin-header-inner">
+        <a href="/admin" class="brand-link">
+            <img src="/images/logo_secondaire.png" alt="" class="admin-header-logo">
+            <span>Administration</span>
+        </a>
+        <div class="admin-header-actions">
+            <a href="/admin" class="btn btn-outline btn-small">Catalogue</a>
+            <a href="/admin/commandes" class="btn btn-outline btn-small">Commandes</a>
+            <span class="admin-user" sec:authentication="name">admin</span>
+            <a href="/admin/mot-de-passe" class="btn btn-outline btn-small">Changer mon mot de passe</a>
+            <form th:action="@{/admin/logout}" method="post" class="admin-inline-form">
+                <button type="submit" class="btn btn-outline btn-small">Déconnexion</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+</body>
+</html>
+

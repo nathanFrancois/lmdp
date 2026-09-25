@@ -11,21 +11,7 @@
 </head>
 <body class="admin-body">
 
-<header class="admin-header">
-    <div class="container admin-header-inner">
-        <a href="/admin" class="brand-link">
-            <img src="/images/logo_secondaire.png" alt="" class="admin-header-logo">
-            <span>Administration</span>
-        </a>
-        <div class="admin-header-actions">
-            <span class="admin-user" sec:authentication="name">admin</span>
-            <a href="/admin/mot-de-passe" class="btn btn-outline btn-small">Changer mon mot de passe</a>
-            <form th:action="@{/admin/logout}" method="post" class="admin-inline-form">
-                <button type="submit" class="btn btn-outline btn-small">Déconnexion</button>
-            </form>
-        </div>
-    </div>
-</header>
+<header class="admin-header" th:replace="~{admin/fragments :: header}"></header>
 
 <main class="container admin-main">
     <div class="admin-page-title">

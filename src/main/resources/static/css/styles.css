@@ -6,6 +6,25 @@
    si des références plus précises sont fournies.
    ========================================================= */
 
+/* =========================================================
+   Polices personnalisées (fournies dans /static/fonts)
+   ========================================================= */
+@font-face {
+  font-family: 'Coneria Script';
+  src: url('/fonts/Demo_ConeriaScript.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Coneria Script';
+  src: url('/fonts/Demo_ConeriaScript_Slanted.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   /* --- Palette de marque (issue de la planche graphique) --- */
   --color-cream: rgb(234, 238, 221);      /* fond crème */
@@ -20,7 +39,7 @@
   --color-border-soft: rgb(197, 205, 171);    /* approximation : bordures discrètes */
   --shadow-soft: 0 4px 14px rgba(58, 74, 46, 0.12); /* approximation : ombre légère */
 
-  --font-heading: Georgia, "Times New Roman", serif;
+  --font-heading: 'Coneria Script', Georgia, "Times New Roman", serif;
   --font-body: "Segoe UI", Verdana, Arial, sans-serif;
 
   --radius-soft: 18px;
@@ -37,17 +56,35 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
 
-  /* Fleurs en filigrane, très estompées derrière le contenu :
-     une à droite en bas de page (fixe), une autre à gauche, haut de page. */
+  /* Fleur en filigrane, très estompée derrière le contenu, à gauche en haut de page. */
   background-color: var(--color-cream);
   background-image:
     linear-gradient(rgba(234, 238, 221, 0.93), rgba(234, 238, 221, 0.93)),
-    url('/images/fleur_2.png'),
-    url('/images/fleur_fond.png');
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-position: left top, 15% 25%, right bottom;
-  background-size: cover, min(420px, 55vw), min(480px, 60vw);
-  background-attachment: scroll, fixed, fixed;
+    url('/images/fleur_2.png');
+  background-repeat: no-repeat, no-repeat;
+  background-position: left top, 15% 25%;
+  background-size: cover, min(420px, 55vw);
+  background-attachment: scroll, fixed;
+}
+
+/* Image « fleur_fond_3 » (visuel texte) en filigrane, sous le contenu mais visible
+   au-dessus du fond crème. Positionnée sous l'en-tête (sticky, opaque) pour rester
+   visible, tout en étant remontée en haut de page. */
+body::after {
+  content: "";
+  position: fixed;
+  top: 150px;
+  right: 0;
+  left: auto;
+  width: min(480px, 60vw);
+  aspect-ratio: 3508 / 2480;
+  background-image: url('/images/fleur_fond_3.png');
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: contain;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
 }
 
 h1, h2, h3 {
@@ -304,14 +341,6 @@ button:focus-visible,
   text-decoration: underline;
 }
 
-.demo-disclaimer {
-  font-style: italic;
-  font-size: 0.92rem;
-  max-width: 65ch;
-  border-left: 4px solid var(--color-lemon);
-  padding-left: 0.9rem;
-}
-
 /* =========================================================
    Sections génériques
    ========================================================= */
@@ -356,6 +385,8 @@ button:focus-visible,
   flex-direction: column;
   box-shadow: 0 2px 6px rgba(58, 74, 46, 0.10), 0 8px 24px rgba(58, 74, 46, 0.08);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  cursor: pointer;
 }
 
 .value-card:hover {
@@ -417,6 +448,15 @@ button:focus-visible,
   background: var(--color-olive-dark);
 }
 
+/* Rend toute la carte cliquable (technique du "stretched link") :
+   le lien du bouton s'étire sur toute la surface de la carte parente. */
+.value-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 @media (max-width: 960px) {
   .value-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -444,25 +484,6 @@ button:focus-visible,
   padding: 1.25rem 2.25rem 2.25rem 0.5rem;
 }
 
-.atelier-teaser-frame {
-  position: absolute;
-  inset: 0 2.25rem 1.5rem 0;
-  background: var(--color-olive);
-  border-radius: var(--radius-soft);
-  transform: rotate(-3deg);
-  z-index: 0;
-}
-
-.atelier-teaser-frame::after {
-  content: "";
-  position: absolute;
-  top: -0.6rem;
-  right: -0.6rem;
-  width: 2.75rem;
-  height: 2.75rem;
-  background: var(--color-lemon);
-  border-radius: 50%;
-}
 
 .atelier-teaser-image {
   display: block;
@@ -558,6 +579,16 @@ button:focus-visible,
   gap: 0.5rem;
   box-shadow: var(--shadow-soft);
   max-width: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.product-card:hover,
+.product-card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(58, 74, 46, 0.2);
+  border-color: var(--color-olive);
 }
 
 .product-photo {
@@ -621,6 +652,16 @@ button:focus-visible,
   text-decoration: none;
   color: inherit;
   display: block;
+}
+
+/* Rend toute la carte cliquable : le lien s'étire sur toute la surface
+   de la carte (technique du "stretched link"), tout en restant sémantiquement
+   attaché à l'image + au titre. */
+.product-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .add-to-cart-form {

@@ -56,12 +56,6 @@ public class PageController {
         model.addAttribute("activePage", "panier");
         return "panier";
     }
-
-    @GetMapping("/commande")
-    public String checkout(Model model) {
-        model.addAttribute("activePage", "panier");
-        return "commande";
-    }
 }
 
 

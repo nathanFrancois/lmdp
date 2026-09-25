@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Votre commande — Les Merveilles de Philomène</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='panier')}"></div>
+
+<main id="contenu">
+    <section class="page-intro">
+        <div class="container">
+            <h1 class="section-title" th:if="${order.paid}">Merci pour votre commande !</h1>
+            <h1 class="section-title" th:unless="${order.paid}">Votre commande</h1>
+
+            <p class="section-note" th:if="${order.paid}">
+                Votre paiement a bien été confirmé. Un récapitulatif vous sera adressé et nous préparons
+                vos créations avec soin.
+            </p>
+            <p class="section-note" th:if="${order.status.name() == 'AWAITING_PAYMENT'}">
+                Votre paiement est en cours de confirmation. Cette page se met à jour dès que notre
+                prestataire nous transmet le résultat.
+            </p>
+            <p class="section-note" th:if="${order.status.name() == 'PAYMENT_FAILED'}">
+                Le paiement n'a pas abouti. Votre panier est conservé : vous pouvez réessayer depuis
+                la page <a href="/panier">panier</a>.
+            </p>
+        </div>
+    </section>
+
+    <section class="order-section">
+        <!-- Le panier n'est vidé que lorsque le paiement est confirmé côté serveur. -->
+        <div class="container" id="order-view" th:attr="data-clear-cart=${order.paid}">
+
+            <dl class="order-meta">
+                <dt>Référence</dt>
+                <dd th:text="${order.reference}">LMDP-XXXX</dd>
+
+                <dt>Statut</dt>
+                <dd th:text="${order.status.label}">Statut</dd>
+
+                <dt>Mode de remise</dt>
+                <dd th:text="${order.deliveryMethod.label}">Remise</dd>
+            </dl>
+
+            <div th:if="${order.shippingAddress != null}" class="order-address">
+                <h2 class="checkout-summary-title">Adresse de livraison</h2>
+                <p>
+                    <span th:text="${order.customer.fullName}">Client</span><br>
+                    <span th:text="${order.shippingAddress.street}">Rue</span><br>
+                    <span th:if="${order.shippingAddress.complement}" th:text="${order.shippingAddress.complement}"></span>
+                    <span th:if="${order.shippingAddress.complement}"><br></span>
+                    <span th:text="${order.shippingAddress.postalCode} + ' ' + ${order.shippingAddress.city}">00000 Ville</span>
+                </p>
+            </div>
+
+            <table class="admin-table order-lines">
+                <thead>
+                <tr>
+                    <th>Création</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${order.lines}">
+                    <td th:text="${line.productName}">Création</td>
+                    <td th:text="${#numbers.formatDecimal(line.unitPrice, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+                    <td th:text="${line.quantity}">1</td>
+                    <td th:text="${#numbers.formatDecimal(line.lineTotal, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <p class="cart-total" th:if="${order.shippingFee.signum() > 0}">
+                Frais de livraison :
+                <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span>
+            </p>
+            <p class="cart-total">
+                Total :
+                <strong th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</strong>
+            </p>
+
+            <p><a href="/creations" class="link-arrow">← Continuer mes achats</a></p>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+
+

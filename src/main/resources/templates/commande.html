@@ -6,6 +6,7 @@
     <title>Passer commande — Les Merveilles de Philomène</title>
     <link rel="icon" href="/images/logo_secondaire.png">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
 </head>
 <body>
 
@@ -17,10 +18,115 @@
         <div class="container">
             <h1 class="section-title">Passer commande</h1>
             <p class="section-note">
-                Cette étape n'est pas encore disponible : la commande et le paiement en ligne arriveront dans une
-                prochaine version du site. Merci de votre patience !
+                Le paiement est réalisé sur la page sécurisée de notre prestataire CAWL.
+                Aucune donnée bancaire ne transite par ce site.
             </p>
-            <p><a href="/panier" class="link-arrow">← Retour au panier</a></p>
+        </div>
+    </section>
+
+    <section class="checkout-section">
+        <div class="container">
+
+            <noscript>
+                <p class="unavailable-note">
+                    La commande nécessite JavaScript activé dans votre navigateur.
+                </p>
+            </noscript>
+
+            <p class="admin-alert admin-alert--error" th:if="${checkoutError}" th:text="${checkoutError}"></p>
+
+            <form th:action="@{/commande}" th:object="${checkoutForm}" method="post" class="checkout-form"
+                  id="checkout-form"
+                  th:attr="data-products-url=@{/api/produits},data-shipping-fee=${shippingFee}">
+
+                <input type="hidden" th:field="*{cart}" id="cart-field">
+
+                <div class="checkout-grid">
+
+                    <div class="checkout-fields">
+                        <fieldset class="checkout-fieldset">
+                            <legend>Vos coordonnées</legend>
+
+                            <label for="firstName">Prénom</label>
+                            <input type="text" id="firstName" th:field="*{firstName}" autocomplete="given-name" required>
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+
+                            <label for="lastName">Nom</label>
+                            <input type="text" id="lastName" th:field="*{lastName}" autocomplete="family-name" required>
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+
+                            <label for="email">Adresse e-mail</label>
+                            <input type="email" id="email" th:field="*{email}" autocomplete="email" required>
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+                            <label for="phone">Téléphone (facultatif)</label>
+                            <input type="tel" id="phone" th:field="*{phone}" autocomplete="tel">
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                        </fieldset>
+
+                        <fieldset class="checkout-fieldset">
+                            <legend>Mode de remise</legend>
+
+                            <div class="checkout-radio">
+                                <input type="radio" id="delivery-pickup" th:field="*{deliveryMethod}" value="PICKUP">
+                                <label for="delivery-pickup">
+                                    Remise en main propre
+                                    <span class="checkout-radio-hint">Sans frais, sur rendez-vous à l'atelier.</span>
+                                </label>
+                            </div>
+
+                            <div class="checkout-radio">
+                                <input type="radio" id="delivery-shipping" th:field="*{deliveryMethod}" value="SHIPPING">
+                                <label for="delivery-shipping">
+                                    Livraison à domicile
+                                    <span class="checkout-radio-hint">
+                                        Frais de livraison :
+                                        <span th:text="${#numbers.formatDecimal(shippingFee, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span>
+                                    </span>
+                                </label>
+                            </div>
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}"></p>
+                        </fieldset>
+
+                        <fieldset class="checkout-fieldset" id="shipping-address-fields">
+                            <legend>Adresse de livraison</legend>
+
+                            <label for="street">Adresse</label>
+                            <input type="text" id="street" th:field="*{street}" autocomplete="street-address">
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></p>
+
+                            <label for="complement">Complément (facultatif)</label>
+                            <input type="text" id="complement" th:field="*{complement}">
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('complement')}" th:errors="*{complement}"></p>
+
+                            <label for="postalCode">Code postal</label>
+                            <input type="text" id="postalCode" th:field="*{postalCode}" autocomplete="postal-code">
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></p>
+
+                            <label for="city">Ville</label>
+                            <input type="text" id="city" th:field="*{city}" autocomplete="address-level2">
+                            <p class="admin-field-error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
+
+                            <p class="admin-field-hint">Livraison en France métropolitaine uniquement.</p>
+                        </fieldset>
+                    </div>
+
+                    <aside class="checkout-summary" aria-label="Récapitulatif de la commande">
+                        <h2 class="checkout-summary-title">Votre commande</h2>
+                        <div id="checkout-summary-lines">
+                            <p>Chargement du panier…</p>
+                        </div>
+                        <p class="cart-total">
+                            Total à payer : <strong id="checkout-total">—</strong>
+                        </p>
+                        <button type="submit" class="btn btn-primary" id="checkout-submit">
+                            Payer en ligne
+                        </button>
+                        <p><a href="/panier" class="link-arrow">← Retour au panier</a></p>
+                    </aside>
+
+                </div>
+            </form>
         </div>
     </section>
 </main>
@@ -28,6 +134,7 @@
 <div th:replace="~{fragments/layout :: footer}"></div>
 
 <script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/checkout.js}" defer></script>
 <script th:src="@{/js/main.js}" defer></script>
 </body>
 </html>

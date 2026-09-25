@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Commande — Administration</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+</head>
+<body class="admin-body">
+
+<div th:replace="~{admin/fragments :: header}"></div>
+
+<main class="container admin-main">
+    <p><a href="/admin/commandes" class="link-arrow">← Retour aux commandes</a></p>
+
+    <h1 class="section-title">
+        Commande <span th:text="${order.reference}">LMDP-XXXX</span>
+    </h1>
+
+    <p class="admin-alert admin-alert--success" th:if="${message}" th:text="${message}"></p>
+    <p class="admin-alert admin-alert--error" th:if="${error}" th:text="${error}"></p>
+
+    <dl class="order-meta">
+        <dt>Passée le</dt>
+        <dd th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</dd>
+
+        <dt>Statut</dt>
+        <dd th:text="${order.status.label}">Statut</dd>
+
+        <dt>Client</dt>
+        <dd>
+            <span th:text="${order.customer.fullName}">Client</span><br>
+            <a th:href="'mailto:' + ${order.customer.email}" th:text="${order.customer.email}">email</a><br>
+            <span th:if="${order.customer.phone}" th:text="${order.customer.phone}"></span>
+        </dd>
+
+        <dt>Remise</dt>
+        <dd>
+            <span th:text="${order.deliveryMethod.label}">Remise</span>
+            <span th:if="${order.shippingAddress != null}">
+                <br><span th:text="${order.shippingAddress.street}">Rue</span>
+                <span th:if="${order.shippingAddress.complement}"><br><span th:text="${order.shippingAddress.complement}"></span></span>
+                <br><span th:text="${order.shippingAddress.postalCode} + ' ' + ${order.shippingAddress.city}">00000 Ville</span>
+            </span>
+        </dd>
+
+        <dt>Paiement</dt>
+        <dd>
+            <span th:text="${order.paymentStatus} ?: 'Aucun retour du prestataire'">Statut CAWL</span><br>
+            <small th:if="${order.paymentId}" th:text="'Paiement ' + ${order.paymentId}"></small>
+            <small th:if="${order.hostedCheckoutId}" th:text="' · Session ' + ${order.hostedCheckoutId}"></small>
+            <span th:if="${order.paidAt}">
+                <br><small th:text="'Payée le ' + ${#temporals.format(order.paidAt, 'dd/MM/yyyy HH:mm')}"></small>
+            </span>
+        </dd>
+    </dl>
+
+    <table class="admin-table">
+        <thead>
+        <tr>
+            <th>Création</th>
+            <th>Identifiant</th>
+            <th>Prix unitaire</th>
+            <th>Quantité</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line : ${order.lines}">
+            <td th:text="${line.productName}">Création</td>
+            <td><small th:text="${line.productId}">id</small></td>
+            <td th:text="${#numbers.formatDecimal(line.unitPrice, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+            <td th:text="${line.quantity}">1</td>
+            <td th:text="${#numbers.formatDecimal(line.lineTotal, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="cart-total">
+        Frais de livraison :
+        <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span>
+    </p>
+    <p class="cart-total">
+        Total :
+        <strong th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</strong>
+    </p>
+
+    <h2 class="checkout-summary-title">Faire évoluer la commande</h2>
+    <p th:if="${#lists.isEmpty(order.nextStatuses)}">Aucune action disponible pour ce statut.</p>
+    <div class="admin-status-actions">
+        <form th:each="next : ${order.nextStatuses}"
+              th:action="@{'/admin/commandes/' + ${order.reference} + '/statut'}" method="post"
+              class="admin-inline-form">
+            <input type="hidden" name="status" th:value="${next.name()}">
+            <button type="submit" class="btn btn-outline btn-small" th:text="${next.label}">Statut</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
+
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Commandes — Administration</title>
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<div th:replace="~{admin/fragments :: header}"></div>
+
+<main class="container admin-main">
+    <div class="admin-page-title">
+        <h1 class="section-title">Commandes</h1>
+    </div>
+
+    <p class="admin-alert admin-alert--success" th:if="${message}" th:text="${message}"></p>
+
+    <table class="admin-table" th:if="${not #lists.isEmpty(orders)}">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Référence</th>
+            <th>Client</th>
+            <th>Remise</th>
+            <th>Total</th>
+            <th>Statut</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+            <td th:text="${order.reference}">LMDP-XXXX</td>
+            <td>
+                <span th:text="${order.customer.fullName}">Client</span>
+                <br><small th:text="${order.customer.email}">email</small>
+            </td>
+            <td th:text="${order.deliveryMethod.label}">Remise</td>
+            <td th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+            <td th:text="${order.status.label}">Statut</td>
+            <td class="admin-table-actions">
+                <a th:href="@{'/admin/commandes/' + ${order.reference}}" class="btn btn-outline btn-small">Détail</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${#lists.isEmpty(orders)}">Aucune commande pour le moment.</p>
+</main>
+
+</body>
+</html>
+
+

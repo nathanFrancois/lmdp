@@ -1,0 +1,146 @@
+/* =========================================================
+   Tunnel de commande : formulaire, récapitulatif et suivi.
+   Complète styles.css et en réutilise la palette.
+   ========================================================= */
+
+.checkout-section,
+.order-section {
+  padding: 2rem 0 3rem;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkout-fieldset {
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-soft);
+  padding: 1.2rem 1.4rem;
+  margin: 0 0 1.4rem;
+  background: #fff;
+}
+
+.checkout-fieldset legend {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  padding: 0 0.4rem;
+}
+
+.checkout-fieldset label {
+  display: block;
+  margin: 0.8rem 0 0.3rem;
+  font-weight: 600;
+}
+
+.checkout-fieldset input[type="text"],
+.checkout-fieldset input[type="email"],
+.checkout-fieldset input[type="tel"] {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  font: inherit;
+  background: var(--color-cream);
+}
+
+.checkout-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+}
+
+.checkout-radio label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.checkout-radio-hint {
+  display: block;
+  font-weight: 400;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.checkout-summary {
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-soft);
+  padding: 1.2rem 1.4rem;
+  background: var(--color-cream-dark);
+  box-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 1rem;
+}
+
+.checkout-summary-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  margin: 0 0 0.8rem;
+}
+
+.checkout-summary .btn {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+.checkout-lines {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.checkout-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed var(--color-border-soft);
+}
+
+.checkout-line-total {
+  font-weight: 700;
+}
+
+/* --- Suivi de commande (page client et back-office) --- */
+.order-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.2rem;
+  margin: 0 0 1.6rem;
+}
+
+.order-meta dt {
+  font-weight: 700;
+}
+
+.order-meta dd {
+  margin: 0;
+}
+
+.order-address {
+  margin-bottom: 1.6rem;
+}
+
+.order-lines {
+  margin-bottom: 1rem;
+}
+
+.admin-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+@media (max-width: 800px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary {
+    position: static;
+  }
+}
+

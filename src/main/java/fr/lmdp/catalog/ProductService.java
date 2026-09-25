@@ -88,6 +88,19 @@ public class ProductService {
     }
 
     /**
+     * Décrémente le stock après un paiement confirmé. Le stock ne peut pas devenir
+     * négatif : en cas d'achats concurrents, la commande payée reste honorée et le
+     * produit se retrouve simplement en rupture.
+     */
+    @Transactional
+    public void decreaseStock(String productId, int quantity) {
+        productRepository.findById(productId).ifPresent(product -> {
+            product.setStock(Math.max(0, product.getStock() - quantity));
+            productRepository.save(product);
+        });
+    }
+
+    /**
      * Supprime un produit. Lève une 404 si l'identifiant est inconnu.
      */
     public void delete(String id) {
