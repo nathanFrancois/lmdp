@@ -13,6 +13,7 @@ import fr.lmdp.order.CheckoutRequest;
 import fr.lmdp.order.Customer;
 import fr.lmdp.order.DeliveryMethod;
 import fr.lmdp.order.Order;
+import fr.lmdp.order.OrderMailService;
 import fr.lmdp.order.OrderReferenceGenerator;
 import fr.lmdp.order.OrderRepository;
 import fr.lmdp.order.OrderService;
@@ -54,7 +55,7 @@ class PaymentServiceTest {
 
         ShopProperties shopProperties = new ShopProperties("http://localhost:8077", BigDecimal.ZERO);
         OrderService orderService = new OrderService(orderRepository, productService,
-                new OrderReferenceGenerator(), shopProperties);
+                new OrderReferenceGenerator(), shopProperties, mock(OrderMailService.class));
         order = orderService.place(new CheckoutRequest(
                 new Customer("Claire", "Martin", "claire@example.com", null),
                 DeliveryMethod.PICKUP,

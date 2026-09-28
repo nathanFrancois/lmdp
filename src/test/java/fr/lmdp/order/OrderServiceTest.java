@@ -23,6 +23,7 @@ class OrderServiceTest {
 
     private final OrderRepository orderRepository = mock(OrderRepository.class);
     private final ProductService productService = mock(ProductService.class);
+    private final OrderMailService orderMailService = mock(OrderMailService.class);
     private OrderService orderService;
 
     @BeforeEach
@@ -31,7 +32,7 @@ class OrderServiceTest {
         when(productService.findById("vase"))
                 .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true)));
         orderService = new OrderService(orderRepository, productService, new OrderReferenceGenerator(),
-                new ShopProperties("http://localhost:8077", new BigDecimal("6.90")));
+                new ShopProperties("http://localhost:8077", new BigDecimal("6.90")), orderMailService);
     }
 
     @Test
@@ -59,6 +60,7 @@ class OrderServiceTest {
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
         verify(productService, times(1)).decreaseStock(eq("vase"), anyInt());
+        verify(orderMailService, times(1)).sendOrderConfirmation(order);
     }
 
     private CheckoutRequest request(DeliveryMethod method, String cart) {

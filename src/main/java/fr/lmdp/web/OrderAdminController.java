@@ -1,6 +1,7 @@
 package fr.lmdp.web;
 
 import fr.lmdp.order.Order;
+import fr.lmdp.order.OrderMailService;
 import fr.lmdp.order.OrderService;
 import fr.lmdp.order.OrderStatus;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrderAdminController {
 
     private final OrderService orderService;
+    private final OrderMailService orderMailService;
 
-    public OrderAdminController(OrderService orderService) {
+    public OrderAdminController(OrderService orderService, OrderMailService orderMailService) {
         this.orderService = orderService;
+        this.orderMailService = orderMailService;
     }
 
     @GetMapping
@@ -49,6 +52,16 @@ public class OrderAdminController {
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", "Ce changement de statut n'est pas autorisé.");
         }
+        return "redirect:/admin/commandes/" + reference;
+    }
+
+    /** Renvoi manuel de l'e-mail de confirmation, par exemple si le client indique ne pas l'avoir reçu. */
+    @PostMapping("/{reference}/renvoyer-confirmation")
+    public String resendConfirmation(@PathVariable String reference, RedirectAttributes redirectAttributes) {
+        Order order = requireOrder(reference);
+        orderMailService.sendOrderConfirmation(order);
+        redirectAttributes.addFlashAttribute("message",
+                "E-mail de confirmation renvoyé à " + order.getCustomer().getEmail() + ".");
         return "redirect:/admin/commandes/" + reference;
     }
 

@@ -99,6 +99,14 @@
             <button type="submit" class="btn btn-outline btn-small" th:text="${next.label}">Statut</button>
         </form>
     </div>
+
+    <h2 class="checkout-summary-title">E-mail de confirmation</h2>
+    <div class="admin-status-actions">
+        <form th:action="@{'/admin/commandes/' + ${order.reference} + '/renvoyer-confirmation'}" method="post"
+              class="admin-inline-form">
+            <button type="submit" class="btn btn-outline btn-small">Renvoyer l'e-mail de confirmation</button>
+        </form>
+    </div>
 </main>
 
 </body>

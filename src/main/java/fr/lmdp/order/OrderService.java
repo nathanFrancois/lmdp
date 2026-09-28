@@ -26,13 +26,16 @@ public class OrderService {
     private final ProductService productService;
     private final OrderReferenceGenerator referenceGenerator;
     private final ShopProperties shopProperties;
+    private final OrderMailService orderMailService;
 
     public OrderService(OrderRepository orderRepository, ProductService productService,
-                        OrderReferenceGenerator referenceGenerator, ShopProperties shopProperties) {
+                        OrderReferenceGenerator referenceGenerator, ShopProperties shopProperties,
+                        OrderMailService orderMailService) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.referenceGenerator = referenceGenerator;
         this.shopProperties = shopProperties;
+        this.orderMailService = orderMailService;
     }
 
     /** Crée une commande en attente de paiement à partir du panier soumis. */
@@ -91,6 +94,7 @@ public class OrderService {
     /**
      * Confirme le paiement d'une commande. Le décompte du stock n'a lieu qu'au premier
      * appel : les notifications rejouées par CAWL sont ainsi sans effet supplémentaire.
+     * L'e-mail de confirmation, avec le lien de suivi, n'est envoyé qu'à cette occasion.
      */
     @Transactional
     public void confirmPayment(Order order, String paymentId, String providerStatus) {
@@ -101,6 +105,9 @@ public class OrderService {
             log.info("Commande {} payée (paiement {})", order.getReference(), paymentId);
         }
         orderRepository.save(order);
+        if (firstConfirmation) {
+            orderMailService.sendOrderConfirmation(order);
+        }
     }
 
     @Transactional

@@ -111,6 +111,28 @@ Sur Render, définir `SPRING_PROFILES_ACTIVE=prod`. Au premier démarrage sur un
 
 Pour ajouter une évolution de schéma, créer un nouveau fichier `V{n}__description.sql` dans `db/migration` : Flyway l'appliquera automatiquement au prochain démarrage, sur H2 comme sur PostgreSQL.
 
+## E-mails transactionnels (Brevo)
+
+La confirmation de commande (envoyée dès que le paiement est validé) part via l'API
+transactionnelle [Brevo](https://developers.brevo.com/reference/sendtransacemail). C'est le seul
+point d'intégration : les futures notifications (`fr.lmdp.notification`) réutiliseront le même
+mécanisme (`EmailSender`, `EmailTemplateRenderer`).
+
+Pour l'activer, il suffit de définir deux variables d'environnement :
+
+```bash
+export BREVO_API_KEY='votre-cle-api-brevo'          # Brevo > Paramètres > Clés API (SMTP & API)
+export BREVO_SENDER_EMAIL='contact@votredomaine.fr'  # doit être un expéditeur vérifié dans Brevo
+export BREVO_SENDER_NAME='Les Merveilles de Philomène'  # facultatif, valeur par défaut déjà correcte
+```
+
+Tant que `BREVO_API_KEY` ou `BREVO_SENDER_EMAIL` sont absents, l'envoi est neutralisé (seulement
+journalisé) : le site fonctionne normalement, sans bloquer le tunnel de commande.
+
+Le lien de suivi inclus dans l'e-mail pointe vers `/commande/{reference}` : la référence de
+commande est un jeton aléatoire de 64 bits (`OrderReferenceGenerator`), donc impossible à deviner
+par quelqu'un qui ne l'a pas reçu par e-mail.
+
 ## Organisation
 
 

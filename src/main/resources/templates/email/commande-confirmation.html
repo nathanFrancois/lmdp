@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Confirmation de commande</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f6f1ec; font-family:Georgia, 'Times New Roman', serif; color:#3a2e28;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f6f1ec; padding:24px 0;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+                   style="background-color:#ffffff; border-radius:8px; overflow:hidden; max-width:600px; width:100%;">
+                <tr>
+                    <td style="background-color:#a9765b; padding:24px 32px; text-align:center;">
+                        <span style="color:#ffffff; font-size:22px; letter-spacing:1px;">Les Merveilles de Philomène</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:32px;">
+                        <h1 style="font-size:20px; margin:0 0 16px;">Merci pour votre commande, <span th:text="${order.customer.firstName}">Prénom</span> !</h1>
+                        <p style="font-size:15px; line-height:1.6; margin:0 0 16px;">
+                            Votre paiement a bien été confirmé pour la commande
+                            <strong th:text="${order.reference}">LMDP-XXXX</strong>. Nous préparons vos créations avec soin.
+                        </p>
+
+                        <p style="margin:24px 0; text-align:center;">
+                            <a th:href="${trackingUrl}"
+                               style="background-color:#a9765b; color:#ffffff; text-decoration:none; padding:12px 24px; border-radius:4px; font-size:15px; display:inline-block;">
+                                Suivre ma commande
+                            </a>
+                        </p>
+                        <p style="font-size:13px; line-height:1.5; color:#6b5d54; margin:0 0 24px;">
+                            Ce lien est personnel : conservez-le, il permet de suivre l'avancement de votre commande
+                            sans avoir besoin de créer de compte.
+                        </p>
+
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; font-size:14px; margin-bottom:16px;">
+                            <thead>
+                            <tr>
+                                <th style="text-align:left; border-bottom:1px solid #e6ddd3; padding:8px 0;">Création</th>
+                                <th style="text-align:right; border-bottom:1px solid #e6ddd3; padding:8px 0;">Qté</th>
+                                <th style="text-align:right; border-bottom:1px solid #e6ddd3; padding:8px 0;">Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="line : ${order.lines}">
+                                <td style="padding:8px 0; border-bottom:1px solid #f0e9e0;" th:text="${line.productName}">Création</td>
+                                <td style="padding:8px 0; border-bottom:1px solid #f0e9e0; text-align:right;" th:text="${line.quantity}">1</td>
+                                <td style="padding:8px 0; border-bottom:1px solid #f0e9e0; text-align:right;"
+                                    th:text="${#numbers.formatDecimal(line.lineTotal, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <p th:if="${order.shippingFee.signum() > 0}" style="font-size:14px; margin:4px 0; text-align:right;">
+                            Frais de livraison :
+                            <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span>
+                        </p>
+                        <p style="font-size:16px; margin:4px 0 24px; text-align:right;">
+                            <strong>Total : <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span></strong>
+                        </p>
+
+                        <div th:if="${order.shippingAddress != null}" style="font-size:14px; line-height:1.6; margin-bottom:16px;">
+                            <strong>Adresse de livraison</strong><br>
+                            <span th:text="${order.customer.fullName}">Client</span><br>
+                            <span th:text="${order.shippingAddress.street}">Rue</span><br>
+                            <span th:if="${order.shippingAddress.complement}" th:text="${order.shippingAddress.complement}"></span>
+                            <span th:if="${order.shippingAddress.complement}"><br></span>
+                            <span th:text="${order.shippingAddress.postalCode} + ' ' + ${order.shippingAddress.city}">00000 Ville</span>
+                        </div>
+
+                        <p style="font-size:13px; color:#6b5d54; margin-top:32px;">
+                            Une question ? Répondez simplement à cet e-mail.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+
