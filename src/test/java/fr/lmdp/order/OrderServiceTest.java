@@ -30,9 +30,9 @@ class OrderServiceTest {
     void setUp() {
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(productService.findById("vase"))
-                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true)));
+                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true, false)));
         orderService = new OrderService(orderRepository, productService, new OrderReferenceGenerator(),
-                new ShopProperties("http://localhost:8077", new BigDecimal("6.90")), orderMailService);
+                new ShopProperties("http://localhost:8077", new BigDecimal("6.90"), ""), orderMailService);
     }
 
     @Test

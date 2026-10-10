@@ -28,7 +28,9 @@ public record ProductRequest(
         @Min(value = 0, message = "Le stock ne peut pas être négatif")
         Integer stock,
 
-        boolean available
+        boolean available,
+
+        boolean customizable
 ) {
 }
 

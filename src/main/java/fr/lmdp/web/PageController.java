@@ -45,10 +45,34 @@ public class PageController {
     public String productDetail(@PathVariable String id, Model model) {
         Product product = productService.findById(id)
                 .filter(Product::isAvailable)
+                .filter(p -> !p.isCustomizable())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Création introuvable"));
         model.addAttribute("activePage", "creations");
         model.addAttribute("product", product);
         return "produit";
+    }
+
+    @GetMapping("/personnalisation")
+    public String personnalisation(Model model) {
+        model.addAttribute("activePage", "personnalisation");
+        model.addAttribute("products", productService.findVisibleCustomizable());
+        return "personnalisation";
+    }
+
+    @GetMapping("/personnalisation/{id}")
+    public String personnalisationDetail(@PathVariable String id, Model model) {
+        Product product = productService.findById(id)
+                .filter(Product::isAvailable)
+                .filter(Product::isCustomizable)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Objet à personnaliser introuvable"));
+        model.addAttribute("activePage", "personnalisation");
+        model.addAttribute("product", product);
+        if (!model.containsAttribute("devisForm")) {
+            DevisForm form = new DevisForm();
+            form.setProductId(product.getId());
+            model.addAttribute("devisForm", form);
+        }
+        return "produit-personnalisation";
     }
 
     @GetMapping("/panier")

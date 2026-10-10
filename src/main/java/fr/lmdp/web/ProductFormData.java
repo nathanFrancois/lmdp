@@ -35,16 +35,20 @@ public class ProductFormData {
 
     private boolean available;
 
+    private boolean customizable;
+
     public ProductFormData() {
     }
 
-    public ProductFormData(String id, String name, String description, BigDecimal price, Integer stock, boolean available) {
+    public ProductFormData(String id, String name, String description, BigDecimal price, Integer stock,
+                           boolean available, boolean customizable) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.available = available;
+        this.customizable = customizable;
     }
 
     public String getId() {
@@ -93,6 +97,14 @@ public class ProductFormData {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public boolean isCustomizable() {
+        return customizable;
+    }
+
+    public void setCustomizable(boolean customizable) {
+        this.customizable = customizable;
     }
 }
 

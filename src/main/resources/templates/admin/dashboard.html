@@ -28,6 +28,7 @@
             <th>Nom</th>
             <th>Prix</th>
             <th>Stock</th>
+            <th>Page</th>
             <th>Visible sur le site</th>
             <th>Actions</th>
         </tr>
@@ -45,6 +46,7 @@
             </td>
             <td th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</td>
             <td th:text="${product.stock}">0</td>
+            <td th:text="${product.customizable} ? 'Personnalisation' : 'Créations'">Créations</td>
             <td>
                 <span th:classappend="${product.available} ? 'is-available' : 'is-unavailable'"
                       th:text="${product.available} ? 'Oui' : 'Non'">Oui</span>

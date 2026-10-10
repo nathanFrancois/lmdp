@@ -51,9 +51,9 @@ class PaymentServiceTest {
         ProductService productService = mock(ProductService.class);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(productService.findById("vase"))
-                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true)));
+                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true, false)));
 
-        ShopProperties shopProperties = new ShopProperties("http://localhost:8077", BigDecimal.ZERO);
+        ShopProperties shopProperties = new ShopProperties("http://localhost:8077", BigDecimal.ZERO, "");
         OrderService orderService = new OrderService(orderRepository, productService,
                 new OrderReferenceGenerator(), shopProperties, mock(OrderMailService.class));
         order = orderService.place(new CheckoutRequest(

@@ -1,4 +1,5 @@
 target/
 .env
+application-local.yml
 .idea/
 data/

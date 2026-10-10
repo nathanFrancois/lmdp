@@ -24,9 +24,9 @@ RUN chown spring:spring /app/app.jar
 
 USER spring:spring
 
-# Render fournit dynamiquement la variable PORT ; l'appli doit écouter dessus.
-ENV PORT=8080
+# Configuration (PORT, SERVER_ADDRESS=0.0.0.0, DB_URL…) fournie par les variables
+# d'environnement de Render, lues par application.yml.
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT}"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 

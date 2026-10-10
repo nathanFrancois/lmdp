@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.name} + ' — Personnalisation — Les Merveilles de Philomène'">Objet à personnaliser</title>
+    <meta name="description" th:content="${product.description}">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='personnalisation')}"></div>
+
+<main id="contenu">
+
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <div class="container">
+            <ol>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/personnalisation">Personnalisation</a></li>
+                <li aria-current="page" th:text="${product.name}">Nom de l'objet</li>
+            </ol>
+        </div>
+    </nav>
+
+    <section class="product-detail">
+        <div class="container product-detail-inner">
+
+            <div class="product-detail-image">
+                <img th:if="${product.hasImage}" th:src="${product.imageUrl}"
+                     th:alt="${product.name}" class="product-photo product-photo--large">
+                <div th:if="${not product.hasImage}" class="product-image-placeholder product-image-placeholder--large" role="img"
+                     th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">
+                    <span aria-hidden="true">Photo à venir</span>
+                </div>
+            </div>
+
+            <div class="product-detail-info">
+                <h1 class="section-title" th:text="${product.name}">Nom de l'objet</h1>
+
+                <p class="product-detail-price">
+                    À partir de
+                    <span th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}">0,00</span>&nbsp;€
+                </p>
+
+                <p class="product-detail-description" th:text="${product.description}">
+                    Description de l'objet proposé à la personnalisation.
+                </p>
+
+                <p th:if="${devisMessage}" class="devis-alert devis-alert--success" th:text="${devisMessage}"></p>
+                <p th:if="${devisError}" class="devis-alert devis-alert--error" th:text="${devisError}"></p>
+
+                <div class="devis-form-wrapper">
+                    <h2 class="section-subtitle">Demander un devis pour cet objet</h2>
+                    <p class="section-note">
+                        Décrivez-nous le motif que vous souhaitez faire graver : nous vous répondrons par e-mail
+                        avec un devis personnalisé.
+                    </p>
+                    <form th:action="@{/personnalisation/devis}" th:object="${devisForm}" method="post" class="devis-form">
+                        <input type="hidden" th:field="*{productId}">
+
+                        <label for="customerName">Votre nom</label>
+                        <input type="text" id="customerName" th:field="*{customerName}" required>
+                        <p class="devis-field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></p>
+
+                        <label for="customerEmail">Votre e-mail</label>
+                        <input type="email" id="customerEmail" th:field="*{customerEmail}" required>
+                        <p class="devis-field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></p>
+
+                        <label for="customerPhone">Votre téléphone (facultatif)</label>
+                        <input type="tel" id="customerPhone" th:field="*{customerPhone}">
+
+                        <label for="message">Motif souhaité</label>
+                        <textarea id="message" th:field="*{message}" rows="5" required
+                                  placeholder="Expliquez-nous ce que vous souhaitez faire graver sur cet objet…"></textarea>
+                        <p class="devis-field-error" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></p>
+
+                        <button type="submit" class="btn btn-primary">Envoyer ma demande de devis</button>
+                    </form>
+                </div>
+
+                <p><a href="/personnalisation" class="link-arrow">← Retour aux objets à personnaliser</a></p>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+

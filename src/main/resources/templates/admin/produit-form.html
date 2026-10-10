@@ -72,6 +72,15 @@
             même si elle a du stock.
         </p>
 
+        <div class="admin-checkbox-row">
+            <input type="checkbox" id="customizable" th:field="*{customizable}">
+            <label for="customizable">Objet à personnaliser</label>
+        </div>
+        <p class="admin-field-hint">
+            Si coché, ce produit apparaît sur la page « Personnalisation » (demande de devis) au lieu de la
+            page « Créations » (ajout au panier).
+        </p>
+
         <button type="submit" class="btn btn-primary" th:text="${mode == 'create'} ? 'Créer le produit' : 'Enregistrer les modifications'">
             Enregistrer
         </button>

@@ -1,5 +1,7 @@
 target/
 data/
+.env
+application-local.yml
 .git/
 .idea/
 *.iml

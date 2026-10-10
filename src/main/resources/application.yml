@@ -1,18 +1,16 @@
 server:
-  address: 127.0.0.1
-  port: 8077
+  address: ${SERVER_ADDRESS}
+  port: ${PORT}
   error:
     include-message: never
 
 spring:
   thymeleaf:
-    cache: false
-
+    cache: ${THYMELEAF_CACHE}
   datasource:
-    url: "jdbc:h2:file:./data/cawl;DB_CLOSE_ON_EXIT=FALSE"
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -24,23 +22,24 @@ spring:
     locations: classpath:db/migration
 
 shop:
-  base-url: ${SHOP_BASE_URL:http://localhost:8077}
+  base-url: ${SHOP_BASE_URL}
   shipping-fee: ${SHOP_SHIPPING_FEE:6.90}
+  contact-email: ${SHOP_CONTACT_EMAIL}
 
 cawl:
   pspid: ${CAWL_PSPID:lmdp}
-  api-key: ${CAWL_API_KEY:}
-  api-secret: ${CAWL_API_SECRET:}
-  webhook-key: ${CAWL_WEBHOOK_KEY:}
-  webhook-secret: ${CAWL_WEBHOOK_SECRET:}
-  api-endpoint: ${CAWL_API_ENDPOINT:https://payment.preprod.cawl-solutions.fr}
+  api-key: ${CAWL_API_KEY}
+  api-secret: ${CAWL_API_SECRET}
+  webhook-key: ${CAWL_WEBHOOK_KEY}
+  webhook-secret: ${CAWL_WEBHOOK_SECRET}
+  api-endpoint: ${CAWL_API_ENDPOINT}
   integrator: ${CAWL_INTEGRATOR:lmdp}
 
   admin:
     username: ${CAWL_ADMIN_USERNAME:admin}
-    password: ${CAWL_ADMIN_PASSWORD:}
+    password: ${CAWL_ADMIN_PASSWORD}
 
 brevo:
-  api-key: ${BREVO_API_KEY:}
-  sender-email: ${BREVO_SENDER_EMAIL:nat36200@googlemail.com}
+  api-key: ${BREVO_API_KEY}
+  sender-email: ${BREVO_SENDER_EMAIL}
   sender-name: ${BREVO_SENDER_NAME:Les Merveilles de Philomène}

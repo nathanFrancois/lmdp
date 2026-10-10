@@ -36,6 +36,21 @@
                            th:attr="aria-current=${activePage == 'creations'} ? 'page' : null">Créations</a>
                     </li>
                     <li>
+                        <a href="/personnalisation"
+                           th:classappend="${activePage == 'personnalisation'} ? ' is-active'"
+                           th:attr="aria-current=${activePage == 'personnalisation'} ? 'page' : null">Personnalisation</a>
+                    </li>
+                    <li>
+                        <a href="/votre-objet"
+                           th:classappend="${activePage == 'votre-objet'} ? ' is-active'"
+                           th:attr="aria-current=${activePage == 'votre-objet'} ? 'page' : null">Votre objet</a>
+                    </li>
+                    <li>
+                        <a href="/grands-projets"
+                           th:classappend="${activePage == 'grands-projets'} ? ' is-active'"
+                           th:attr="aria-current=${activePage == 'grands-projets'} ? 'page' : null">Grands projets</a>
+                    </li>
+                    <li>
                         <a href="/atelier"
                            th:classappend="${activePage == 'atelier'} ? ' is-active'"
                            th:attr="aria-current=${activePage == 'atelier'} ? 'page' : null">L'atelier</a>
@@ -74,6 +89,9 @@
             <ul>
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/creations">Créations</a></li>
+                <li><a href="/personnalisation">Personnalisation</a></li>
+                <li><a href="/votre-objet">Votre objet</a></li>
+                <li><a href="/grands-projets">Grands projets</a></li>
                 <li><a href="/atelier">L'atelier</a></li>
                 <li><a href="/panier">Panier</a></li>
             </ul>

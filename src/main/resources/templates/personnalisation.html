@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Personnalisation — Les Merveilles de Philomène</title>
+    <meta name="description" content="Choisissez un objet à personnaliser et demandez un devis pour votre gravure sur mesure.">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='personnalisation')}"></div>
+
+<main id="contenu">
+    <section class="page-intro">
+        <div class="container">
+            <h1 class="section-title">Personnaliser un objet</h1>
+            <p class="section-note">
+                Choisissez un objet parmi cette sélection et demandez un devis : expliquez-nous le motif
+                que vous souhaitez y faire graver, nous revenons vers vous rapidement.
+            </p>
+        </div>
+    </section>
+
+    <section class="catalog" aria-label="Liste des objets à personnaliser">
+        <div class="container">
+            <ul class="product-grid product-grid--catalog">
+                <li class="product-card" th:each="product : ${products}">
+                    <a th:href="@{'/personnalisation/' + ${product.id}}" class="product-card-link">
+                        <img th:if="${product.hasImage}" th:src="${product.imageUrl}"
+                             th:alt="${product.name}" class="product-photo">
+                        <div th:if="${not product.hasImage}" class="product-image-placeholder" role="img"
+                             th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">
+                            <span aria-hidden="true">Photo à venir</span>
+                        </div>
+                        <h2 class="product-name" th:text="${product.name}">Nom de l'objet</h2>
+                    </a>
+                    <p class="product-description" th:text="${product.description}">Description de l'objet.</p>
+                    <p class="product-price">
+                        À partir de
+                        <span th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}">0,00</span>&nbsp;€
+                    </p>
+                    <a th:href="@{'/personnalisation/' + ${product.id}}" class="value-btn">Demander un devis</a>
+                </li>
+            </ul>
+            <p th:if="${#lists.isEmpty(products)}">Aucun objet à personnaliser pour le moment.</p>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+

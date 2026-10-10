@@ -36,12 +36,23 @@ public class ProductService {
     }
 
     /**
-     * Produits réellement visibles sur le site public (catalogue, fiches produit, API de lecture).
-     * Un produit décoché "visible" dans l'administration n'apparaît plus du tout ici,
-     * quel que soit son stock.
+     * Produits réellement visibles sur le site public (catalogue "Créations", fiches produit,
+     * API de lecture / panier). Un produit décoché "visible" dans l'administration n'apparaît
+     * plus du tout ici, quel que soit son stock. Les objets à personnaliser (voir
+     * {@link #findVisibleCustomizable()}) n'apparaissent jamais ici : ils sont vendus sur devis,
+     * pas ajoutés au panier.
      */
     public List<Product> findVisible() {
-        return productRepository.findByAvailableTrue();
+        return productRepository.findByAvailableTrueAndCustomizableFalse();
+    }
+
+    /**
+     * Objets à personnaliser, réellement visibles, affichés sur la page "Personnalisation".
+     * Contrairement au catalogue "Créations", ces objets ne peuvent pas être ajoutés au panier :
+     * le client demande un devis en décrivant le motif souhaité.
+     */
+    public List<Product> findVisibleCustomizable() {
+        return productRepository.findByAvailableTrueAndCustomizableTrue();
     }
 
     public List<Product> findFeatured(int limit) {
@@ -59,12 +70,12 @@ public class ProductService {
      */
     @Transactional
     public Product create(String id, String name, String description, BigDecimal price, int stock,
-                          boolean available, MultipartFile image) {
+                          boolean available, boolean customizable, MultipartFile image) {
         String productId = (id == null || id.isBlank()) ? slugify(name) : id;
         if (productRepository.existsById(productId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Un produit avec cet identifiant existe déjà.");
         }
-        Product product = new Product(productId, name, description, price, stock, available);
+        Product product = new Product(productId, name, description, price, stock, available, customizable);
         applyImage(product, image);
         return productRepository.save(product);
     }
@@ -75,7 +86,7 @@ public class ProductService {
      */
     @Transactional
     public Product update(String id, String name, String description, BigDecimal price, int stock,
-                          boolean available, MultipartFile image) {
+                          boolean available, boolean customizable, MultipartFile image) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produit introuvable"));
         product.setName(name);
@@ -83,6 +94,7 @@ public class ProductService {
         product.setPrice(price);
         product.setStock(stock);
         product.setAvailable(available);
+        product.setCustomizable(customizable);
         applyImage(product, image);
         return productRepository.save(product);
     }

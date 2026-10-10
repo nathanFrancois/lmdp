@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grands projets — Les Merveilles de Philomène</title>
+    <meta name="description" content="Mariage, événement, restaurant, entreprise : des séries d'objets gravés sur mesure, à partir de 10 pièces. Demandez votre devis.">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='grands-projets')}"></div>
+
+<main id="contenu">
+
+    <!-- En-tête de page -->
+    <section class="projet-hero">
+        <div class="container projet-hero-inner">
+            <div class="projet-hero-text">
+                <p class="projet-eyebrow">Juliette en grand</p>
+                <h1 class="projet-title">Pour les grandes histoires, créer l’émerveillement.</h1>
+                <p class="projet-lead">
+                    Un mariage, un anniversaire, une table de restaurant ou les cadeaux d'une entreprise :
+                    je grave une série d'objets identiques, pensée rien que pour votre événement.
+                    À partir de 10 pièces.
+                </p>
+                <a href="#demande" class="btn btn-primary">Parlons de votre projet</a>
+            </div>
+            <div class="projet-hero-visual">
+                <img src="/images/juliette.png" alt="Série de verres gravés pour un événement sur mesure"
+                     class="projet-hero-image">
+                <p class="projet-hero-badge" aria-hidden="true">
+                    <span class="projet-hero-badge-number">×60</span>
+                    <span>verres gravés aux prénoms des mariés</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Déroulé -->
+    <section class="projet-steps" aria-labelledby="steps-title">
+        <div class="container">
+            <h2 id="steps-title" class="section-title projet-steps-title">Une merveille, en série</h2>
+            <ol class="projet-steps-list">
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">1</span>
+                    <h3 class="projet-step-title">Votre événement</h3>
+                    <p>L'occasion, le nombre de pièces, la date : vous me décrivez votre projet.</p>
+                </li>
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">2</span>
+                    <h3 class="projet-step-title">Un motif unique</h3>
+                    <p>Je crée le dessin à votre image et vous le soumets avec un devis détaillé.</p>
+                </li>
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">3</span>
+                    <h3 class="projet-step-title">La série gravée</h3>
+                    <p>Chaque pièce est gravée à la main, prête pour le grand jour.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Demande de devis -->
+    <section id="demande" class="projet-demande" aria-labelledby="demande-title">
+        <div class="container">
+            <div class="projet-card">
+                <div class="projet-card-intro">
+                    <h2 id="demande-title" class="section-title">Racontez-moi votre projet</h2>
+                    <p class="section-note">
+                        Quelques informations suffisent pour commencer : je vous réponds par e-mail avec un devis sur mesure.
+                    </p>
+                </div>
+
+                <p th:if="${devisMessage}" class="devis-alert devis-alert--success" role="status" th:text="${devisMessage}"></p>
+                <p th:if="${devisError}" class="devis-alert devis-alert--error" role="alert" th:text="${devisError}"></p>
+
+                <form th:action="@{/grands-projets/devis}" th:object="${projetForm}" method="post" class="devis-form projet-form">
+                    <fieldset class="projet-occasions">
+                        <legend>L'occasion</legend>
+                        <div class="projet-chips">
+                            <label class="projet-chip" th:each="occ : ${occasions}">
+                                <input type="radio" th:field="*{occasion}" th:value="${occ}" required>
+                                <span th:text="${occ}">Mariage</span>
+                            </label>
+                        </div>
+                        <p class="devis-field-error" th:if="${#fields.hasErrors('occasion')}" th:errors="*{occasion}"></p>
+                    </fieldset>
+
+                    <div class="projet-form-grid">
+                        <div class="projet-field">
+                            <label for="quantite">Nombre de pièces</label>
+                            <div class="projet-input-suffix">
+                                <input type="number" id="quantite" th:field="*{quantite}" min="10" max="10000" step="1"
+                                       inputmode="numeric" placeholder="60" required>
+                                <span aria-hidden="true">pièces</span>
+                            </div>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('quantite')}" th:errors="*{quantite}"></p>
+                        </div>
+                        <div class="projet-field">
+                            <label for="dateEvenement">Date de l'événement <span class="projet-optional">(facultatif)</span></label>
+                            <input type="date" id="dateEvenement" th:field="*{dateEvenement}">
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('dateEvenement')}" th:errors="*{dateEvenement}"></p>
+                        </div>
+                        <div class="projet-field">
+                            <label for="customerName">Votre nom</label>
+                            <input type="text" id="customerName" th:field="*{customerName}" autocomplete="name" required>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></p>
+                        </div>
+                        <div class="projet-field">
+                            <label for="customerEmail">Votre e-mail</label>
+                            <input type="email" id="customerEmail" th:field="*{customerEmail}" autocomplete="email" required>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></p>
+                        </div>
+                        <div class="projet-field projet-field--full">
+                            <label for="customerPhone">Votre téléphone <span class="projet-optional">(facultatif)</span></label>
+                            <input type="tel" id="customerPhone" th:field="*{customerPhone}" autocomplete="tel">
+                        </div>
+                        <div class="projet-field projet-field--full">
+                            <label for="message">Votre projet</label>
+                            <textarea id="message" th:field="*{message}" rows="6" maxlength="3000" required
+                                      placeholder="Ex. : 60 verres à vin gravés avec « Léa &amp; Hugo » et la date du mariage…"></textarea>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer ma demande de devis</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+
+

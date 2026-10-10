@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 import java.util.Base64;
 
 /**
- * Représente un objet en verre déjà gravé, proposé tel quel à la vente.
- * Aucune personnalisation n'est possible : le produit est vendu avec le motif décrit.
+ * Représente un objet en verre proposé à la vente : soit déjà gravé et vendu
+ * tel quel (page « Créations »), soit proposé à la personnalisation, auquel cas
+ * le client demande un devis en décrivant le motif souhaité (page « Personnalisation »).
+ * Le champ {@link #customizable} détermine sur quelle page l'objet apparaît.
  */
 @Entity
 @Table(name = "products")
@@ -36,6 +38,12 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    // Détermine si l'objet apparaît sur la page "Créations" (false) ou sur la
+    // page "Personnalisation" (true), où le client demande un devis plutôt que
+    // d'ajouter l'objet au panier.
+    @Column(nullable = false)
+    private boolean customizable;
+
     // byte[] est chargé avec le produit et correspond à BYTEA dans PostgreSQL.
     // Ne pas utiliser @Lob : PostgreSQL le mapperait sur un OID, pas sur BYTEA.
     @Column(name = "image_data")
@@ -50,13 +58,15 @@ public class Product {
         // Requis par JPA/Hibernate.
     }
 
-    public Product(String id, String name, String description, BigDecimal price, int stock, boolean available) {
+    public Product(String id, String name, String description, BigDecimal price, int stock, boolean available,
+                   boolean customizable) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.available = available;
+        this.customizable = customizable;
     }
 
     public String getId() {
@@ -101,6 +111,14 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public boolean isCustomizable() {
+        return customizable;
+    }
+
+    public void setCustomizable(boolean customizable) {
+        this.customizable = customizable;
     }
 
     public byte[] getImageData() {

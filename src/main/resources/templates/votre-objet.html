@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Votre objet — Les Merveilles de Philomène</title>
+    <meta name="description" content="Confiez-moi votre objet et votre idée : je dessine le motif que vous avez en tête et je le grave pour prolonger son histoire.">
+    <link rel="icon" href="/images/logo_secondaire.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='votre-objet')}"></div>
+
+<main id="contenu">
+
+    <!-- En-tête de page -->
+    <section class="projet-hero">
+        <div class="container projet-hero-inner">
+            <div class="projet-hero-text">
+                <p class="projet-eyebrow">Entre les mains de Virginie</p>
+                <h1 class="projet-title">Une seconde vie pour les objets qui ont déjà tant à raconter.</h1>
+                <p class="projet-tagline">Graver vos souvenirs pour prolonger leur histoire.</p>
+                <p class="projet-lead">
+                    Le verre de votre grand-mère, un miroir chiné, une carafe de famille…
+                    Vous venez avec votre objet et une idée, je dessine le motif que vous avez en tête
+                    et je le grave pour vous.
+                </p>
+                <a href="#demande" class="btn btn-primary">Demander un devis</a>
+            </div>
+            <div class="projet-hero-visual">
+                <img src="/images/virginie.png" alt="Un objet personnel confié à l'atelier pour être gravé"
+                     class="projet-hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Déroulé -->
+    <section class="projet-steps" aria-labelledby="steps-title">
+        <div class="container">
+            <h2 id="steps-title" class="section-title projet-steps-title">De votre idée à votre objet gravé</h2>
+            <ol class="projet-steps-list">
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">1</span>
+                    <h3 class="projet-step-title">Vous me racontez</h3>
+                    <p>Votre objet, son histoire et l'idée de gravure qui vous trotte dans la tête.</p>
+                </li>
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">2</span>
+                    <h3 class="projet-step-title">Je dessine</h3>
+                    <p>Je mets votre idée en forme et vous soumets le motif avant toute gravure.</p>
+                </li>
+                <li class="projet-step">
+                    <span class="projet-step-number" aria-hidden="true">3</span>
+                    <h3 class="projet-step-title">Je grave</h3>
+                    <p>Une fois le dessin validé, votre objet repart avec une nouvelle page de son histoire.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Demande de devis -->
+    <section id="demande" class="projet-demande" aria-labelledby="demande-title">
+        <div class="container">
+            <div class="projet-card">
+                <div class="projet-card-intro">
+                    <h2 id="demande-title" class="section-title">Parlez-moi de votre objet</h2>
+                    <p class="section-note">
+                        Décrivez votre objet et votre idée : je vous réponds par e-mail avec un devis personnalisé.
+                        N'hésitez pas à joindre une photo en répondant à mon e-mail.
+                    </p>
+                </div>
+
+                <p th:if="${devisMessage}" class="devis-alert devis-alert--success" role="status" th:text="${devisMessage}"></p>
+                <p th:if="${devisError}" class="devis-alert devis-alert--error" role="alert" th:text="${devisError}"></p>
+
+                <form th:action="@{/votre-objet/devis}" th:object="${projetForm}" method="post" class="devis-form projet-form">
+                    <div class="projet-form-grid">
+                        <div class="projet-field">
+                            <label for="customerName">Votre nom</label>
+                            <input type="text" id="customerName" th:field="*{customerName}" autocomplete="name" required>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></p>
+                        </div>
+                        <div class="projet-field">
+                            <label for="customerEmail">Votre e-mail</label>
+                            <input type="email" id="customerEmail" th:field="*{customerEmail}" autocomplete="email" required>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></p>
+                        </div>
+                        <div class="projet-field">
+                            <label for="customerPhone">Votre téléphone <span class="projet-optional">(facultatif)</span></label>
+                            <input type="tel" id="customerPhone" th:field="*{customerPhone}" autocomplete="tel">
+                        </div>
+                        <div class="projet-field">
+                            <label for="objet">Votre objet</label>
+                            <input type="text" id="objet" th:field="*{objet}" maxlength="200" required
+                                   placeholder="Ex. : un verre à pied, un miroir ancien…">
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('objet')}" th:errors="*{objet}"></p>
+                        </div>
+                        <div class="projet-field projet-field--full">
+                            <label for="message">Votre idée de gravure</label>
+                            <textarea id="message" th:field="*{message}" rows="6" maxlength="3000" required
+                                      placeholder="Le dessin, les mots, l'emplacement… et pourquoi pas l'histoire de cet objet."></textarea>
+                            <p class="devis-field-error" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer ma demande de devis</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:src="@{/js/cart.js}" defer></script>
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
+

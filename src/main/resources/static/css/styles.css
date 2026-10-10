@@ -201,13 +201,14 @@ button:focus-visible,
 .main-nav .nav-list {
   list-style: none;
   display: flex;
-  gap: 1.75rem;
+  gap: 1.25rem;
   margin: 0;
   padding: 0;
 }
 
 .main-nav a {
   text-decoration: none;
+  white-space: nowrap;
   font-weight: 600;
   padding: 0.4rem 0.2rem;
   border-bottom: 2px solid transparent;
@@ -760,6 +761,382 @@ button:focus-visible,
 }
 
 /* =========================================================
+   Formulaire de demande de devis (page Personnalisation)
+   ========================================================= */
+.devis-form-wrapper {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: var(--color-cream);
+  border-radius: var(--radius-soft);
+}
+
+.devis-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.devis-form label {
+  font-weight: bold;
+  margin-top: 0.75rem;
+}
+
+.devis-form input[type="text"],
+.devis-form input[type="email"],
+.devis-form input[type="tel"],
+.devis-form textarea {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.devis-form button[type="submit"] {
+  margin-top: 1.25rem;
+  align-self: flex-start;
+}
+
+.devis-field-error {
+  color: rgb(150, 20, 20);
+  font-size: 0.85rem;
+  margin: 0.15rem 0 0;
+}
+
+.devis-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.devis-alert--success {
+  background: rgba(124, 153, 11, 0.15);
+  color: var(--color-forest);
+}
+
+.devis-alert--error {
+  background: rgba(200, 40, 40, 0.12);
+  color: rgb(150, 20, 20);
+}
+
+/* =========================================================
+   Pages "Votre objet" et "Grands projets"
+   ========================================================= */
+.projet-hero {
+  padding: 3.5rem 0 3rem;
+}
+
+.projet-hero-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.projet-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.projet-eyebrow {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--color-olive-dark);
+}
+
+.projet-title {
+  margin: 0;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+}
+
+.projet-tagline {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  color: var(--color-olive-dark);
+  padding-left: 1rem;
+  border-left: 4px solid var(--color-lemon);
+}
+
+.projet-lead {
+  margin: 0;
+  max-width: 52ch;
+}
+
+.projet-hero-text .btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.projet-hero-visual {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Arche : forme douce et moderne, rappelant une vitrine d'atelier. */
+.projet-hero-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 999px 999px var(--radius-soft) var(--radius-soft);
+  box-shadow: var(--shadow-soft);
+  outline: 2px solid var(--color-olive);
+  outline-offset: 10px;
+}
+
+.projet-hero-badge {
+  position: absolute;
+  left: -1.5rem;
+  bottom: 1.5rem;
+  margin: 0;
+  max-width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1.1rem;
+  background: var(--color-cream);
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(58, 74, 46, 0.2);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.projet-hero-badge-number {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--color-olive);
+}
+
+/* --- Déroulé en 3 étapes --- */
+.projet-steps {
+  background: var(--color-cream-dark);
+  padding: 3rem 0;
+}
+
+.projet-steps-title {
+  text-align: center;
+  margin: 0 0 2rem;
+}
+
+.projet-steps-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.projet-step {
+  position: relative;
+  background: var(--color-cream);
+  border-radius: var(--radius-soft);
+  padding: 2.25rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.projet-step p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.projet-step-number {
+  position: absolute;
+  top: -1.1rem;
+  left: 1.5rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-olive);
+  color: var(--color-cream);
+  font-weight: 700;
+  box-shadow: 0 0 0 4px var(--color-lemon);
+}
+
+.projet-step-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+/* --- Formulaire de demande de devis --- */
+.projet-demande {
+  padding: 3.5rem 0 2rem;
+  scroll-margin-top: 140px;
+}
+
+.projet-card {
+  max-width: 820px;
+  margin: 0 auto;
+  background: var(--color-cream);
+  border: 1px solid var(--color-border-soft);
+  border-top: 4px solid var(--color-olive);
+  border-radius: var(--radius-soft);
+  padding: 2rem 2.25rem 2.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.projet-card-intro .section-title {
+  margin: 0 0 0.35rem;
+}
+
+.projet-card-intro .section-note {
+  margin: 0 0 1rem;
+}
+
+.projet-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 1.25rem;
+}
+
+.projet-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.projet-field--full {
+  grid-column: 1 / -1;
+}
+
+.projet-optional {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.projet-form input,
+.projet-form textarea {
+  width: 100%;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.devis-form input[type="number"],
+.devis-form input[type="date"] {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.projet-form input:focus,
+.projet-form textarea:focus {
+  outline: none;
+  border-color: var(--color-olive);
+  box-shadow: 0 0 0 3px rgba(124, 153, 11, 0.2);
+}
+
+.projet-input-suffix {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.projet-input-suffix span {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Occasions : boutons radio présentés en « pastilles » */
+.projet-occasions {
+  border: 0;
+  margin: 0 0 0.5rem;
+  padding: 0;
+}
+
+.projet-occasions legend {
+  font-weight: bold;
+  padding: 0;
+  margin-bottom: 0.6rem;
+}
+
+.projet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.devis-form .projet-chip {
+  margin: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.projet-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.projet-chip span {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  border: 1.5px solid var(--color-border-soft);
+  border-radius: 999px;
+  background: #fff;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.projet-chip:hover span {
+  border-color: var(--color-olive);
+}
+
+.projet-chip input:checked + span {
+  background: var(--color-olive);
+  border-color: var(--color-olive);
+  color: var(--color-cream);
+}
+
+.projet-chip input:focus-visible + span {
+  outline: 3px solid var(--color-olive);
+  outline-offset: 2px;
+}
+
+@media (max-width: 860px) {
+  .projet-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .projet-hero-visual {
+    order: -1;
+    max-width: 300px;
+  }
+
+  .projet-steps-list {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .projet-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .projet-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projet-hero-badge {
+    left: -0.5rem;
+  }
+}
+
+/* =========================================================
    Panier
    ========================================================= */
 .cart-flash-message {
@@ -1002,6 +1379,8 @@ button:focus-visible,
 .footer-nav ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.25rem;
   margin: 0;
   padding: 0;
@@ -1025,17 +1404,9 @@ button:focus-visible,
 }
 
 /* =========================================================
-   Responsive : mobile
+   Responsive : menu burger (6 onglets, bascule plus tôt)
    ========================================================= */
-@media (max-width: 720px) {
-  .header-actions {
-    gap: 0.75rem;
-  }
-
-  .cart-label {
-    display: none;
-  }
-
+@media (max-width: 1080px) {
   .nav-toggle {
     display: flex;
   }
@@ -1058,6 +1429,19 @@ button:focus-visible,
     flex-direction: column;
     gap: 0;
     padding: 0.5rem 1.25rem 1rem;
+  }
+}
+
+/* =========================================================
+   Responsive : mobile
+   ========================================================= */
+@media (max-width: 720px) {
+  .header-actions {
+    gap: 0.75rem;
+  }
+
+  .cart-label {
+    display: none;
   }
 
   .hero-inner {

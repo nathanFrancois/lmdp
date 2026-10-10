@@ -34,14 +34,14 @@ public class ProductAdminController {
     public ResponseEntity<Product> create(@Valid @RequestBody ProductRequest request) {
         Product created = productService.create(
                 request.id(), request.name(), request.description(), request.price(), request.stock(),
-                request.available(), null);
+                request.available(), request.customizable(), null);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
     public Product update(@PathVariable String id, @Valid @RequestBody ProductRequest request) {
         return productService.update(id, request.name(), request.description(), request.price(), request.stock(),
-                request.available(), null);
+                request.available(), request.customizable(), null);
     }
 
     @DeleteMapping("/{id}")

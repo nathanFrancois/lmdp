@@ -11,5 +11,11 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<fr.lmdp.catalog.Product, String> {
 
     List<fr.lmdp.catalog.Product> findByAvailableTrue();
+
+    /** Produits vendus tels quels, affichés sur la page "Créations". */
+    List<fr.lmdp.catalog.Product> findByAvailableTrueAndCustomizableFalse();
+
+    /** Produits à personnaliser sur devis, affichés sur la page "Personnalisation". */
+    List<fr.lmdp.catalog.Product> findByAvailableTrueAndCustomizableTrue();
 }
 
