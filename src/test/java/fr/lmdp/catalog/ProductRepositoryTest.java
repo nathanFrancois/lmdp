@@ -17,6 +17,23 @@ class ProductRepositoryTest {
     @Autowired private jakarta.persistence.EntityManager entityManager;
 
     @Test
+    void selectingAnotherProductReplacesPreviousSelection() {
+        var service = new ProductService(repository);
+        service.create("first", "Premier", "Gravure", BigDecimal.TEN, 1, true, false, true, null);
+        service.create("second", "Second", "Gravure", BigDecimal.TEN, 1, true, false, true, null);
+        repository.flush();
+        entityManager.clear();
+        assertThat(repository.findByFeaturedTrue()).extracting(Product::getId).containsExactly("second");
+        service.update("first", "Premier", "Gravure", BigDecimal.TEN, 1, true, false, true, null);
+        repository.flush();
+        entityManager.clear();
+        assertThat(repository.findByFeaturedTrue()).extracting(Product::getId).containsExactly("first");
+        service.update("first", "Premier", "Gravure", BigDecimal.TEN, 1, true, false, false, null);
+        repository.flush();
+        assertThat(repository.findByFeaturedTrue()).isEmpty();
+    }
+
+    @Test
     void migrationPersistsHighlightAndVisibilityFiltersStillApply() {
         var visible = new Product("visible", "Vase", "Gravure", BigDecimal.TEN, 1, true, false);
         visible.setFeatured(true);

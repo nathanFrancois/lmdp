@@ -12,6 +12,12 @@ public interface ProductRepository extends JpaRepository<fr.lmdp.catalog.Product
 
     List<fr.lmdp.catalog.Product> findByAvailableTrue();
 
+    @org.springframework.data.jpa.repository.Query(value =
+            "SELECT id FROM catalog_feature_lock WHERE id = 1 FOR UPDATE", nativeQuery = true)
+    Integer lockFeaturedSelection();
+
+    List<Product> findByFeaturedTrue();
+
     /** Produits vendus tels quels, affichés sur la page "Créations". */
     List<fr.lmdp.catalog.Product> findByAvailableTrueAndCustomizableFalse();
 

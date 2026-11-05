@@ -12,6 +12,17 @@ import static org.mockito.Mockito.*;
 
 class PageControllerTest {
     @Test
+    void withoutFeaturedProductTheCatalogueRemainsComplete() {
+        var service = mock(ProductService.class);
+        var regular = new Product("regular", "Vase", "Gravure", BigDecimal.TEN, 1, true, false);
+        when(service.findVisible()).thenReturn(List.of(regular));
+        var model = new ExtendedModelMap();
+        new PageController(service).creations(model);
+        assertThat(model.get("featuredProduct")).isNull();
+        assertThat(model.get("products")).isEqualTo(List.of(regular));
+    }
+
+    @Test
     void creationsDisplayFeaturedProductsFirstWithoutDuplicates() {
         var service = mock(ProductService.class);
         var regular = new Product("regular", "Vase", "Gravure", BigDecimal.TEN, 1, true, false);
@@ -20,6 +31,7 @@ class PageControllerTest {
         when(service.findVisible()).thenReturn(List.of(regular, featured));
         var model = new ExtendedModelMap();
         assertThat(new PageController(service).creations(model)).isEqualTo("creations");
-        assertThat(model.get("products")).isEqualTo(List.of(featured, regular));
+        assertThat(model.get("featuredProduct")).isEqualTo(featured);
+        assertThat(model.get("products")).isEqualTo(List.of(regular));
     }
 }

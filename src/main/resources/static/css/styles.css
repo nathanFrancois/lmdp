@@ -585,30 +585,70 @@ button:focus-visible,
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.product-card--featured {
-  grid-column: 1 / -1;
-  border: 2px solid var(--color-olive);
-  padding: 1.5rem;
+/* A dedicated editorial opening, separate from the catalogue grid. */
+.featured-creation {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  padding: 0;
+  margin-bottom: 3rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 28px;
+  background: var(--color-cream);
+  box-shadow: var(--shadow-soft);
 }
 
-.product-card--featured .product-photo,
-.product-card--featured .product-image-placeholder {
-  max-height: 420px;
-  object-fit: contain;
+.featured-creation-media {
+  min-width: 0;
   background: var(--color-cream-dark);
+  padding: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  align-items: center;
 }
 
-.product-card--featured .product-name {
-  font-size: 1.5rem;
+.featured-creation-media img,
+.featured-creation-media .product-image-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 18px;
 }
 
-.product-featured-badge {
-  align-self: flex-start;
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  background: var(--color-lemon);
+.featured-creation-content {
+  min-width: 0;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.featured-creation-eyebrow {
   color: var(--color-forest);
+  font-size: .75rem;
   font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--color-lemon);
+  padding-bottom: .6rem;
+}
+
+.featured-creation-content h2 {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.featured-creation-description { margin: 0; white-space: pre-line; }
+.featured-creation-price { margin: 0; font-size: 1.5rem; font-weight: 700; }
+.featured-creation-content .btn { margin-top: .5rem; }
+
+@media (max-width: 700px) {
+  .featured-creation { grid-template-columns: 1fr; }
+  .featured-creation-media img,
+  .featured-creation-media .product-image-placeholder { max-height: 380px; }
 }
 
 .product-card:hover,

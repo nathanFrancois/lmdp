@@ -71,13 +71,14 @@ public class ProductService {
     @Transactional
     public Product create(String id, String name, String description, BigDecimal price, int stock,
                           boolean available, boolean customizable, boolean featured, MultipartFile image) {
+        productRepository.lockFeaturedSelection();
         String productId = (id == null || id.isBlank()) ? slugify(name) : id;
         if (productRepository.existsById(productId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Un produit avec cet identifiant existe déjà.");
         }
         Product product = new Product(productId, name, description, price, stock, available, customizable);
-        product.setFeatured(featured && !customizable);
         applyImage(product, image);
+        applyFeatured(product, featured && !customizable);
         return productRepository.save(product);
     }
 
@@ -88,6 +89,7 @@ public class ProductService {
     @Transactional
     public Product update(String id, String name, String description, BigDecimal price, int stock,
                           boolean available, boolean customizable, boolean featured, MultipartFile image) {
+        productRepository.lockFeaturedSelection();
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produit introuvable"));
         product.setName(name);
@@ -96,8 +98,8 @@ public class ProductService {
         product.setStock(stock);
         product.setAvailable(available);
         product.setCustomizable(customizable);
-        product.setFeatured(featured && !customizable);
         applyImage(product, image);
+        applyFeatured(product, featured && !customizable);
         return productRepository.save(product);
     }
 
@@ -122,6 +124,15 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produit introuvable");
         }
         productRepository.deleteById(id);
+    }
+
+    private void applyFeatured(Product product, boolean featured) {
+        if (featured) {
+            productRepository.findByFeaturedTrue().stream()
+                    .filter(previous -> !previous.getId().equals(product.getId()))
+                    .forEach(previous -> previous.setFeatured(false));
+        }
+        product.setFeatured(featured);
     }
 
     private static void applyImage(Product product, MultipartFile image) {
