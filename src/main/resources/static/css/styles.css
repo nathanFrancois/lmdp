@@ -937,6 +937,11 @@ button:focus-visible,
   border-left: 4px solid var(--color-lemon);
 }
 
+.projet-tagline--standard {
+  font-family: var(--font-body);
+  font-style: normal;
+}
+
 .projet-lead {
   margin: 0;
   max-width: 52ch;
