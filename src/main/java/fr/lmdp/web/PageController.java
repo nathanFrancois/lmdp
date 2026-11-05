@@ -30,8 +30,7 @@ public class PageController {
 
     @GetMapping("/atelier")
     public String atelier(Model model) {
-        model.addAttribute("activePage", "atelier");
-        return "atelier";
+        return "redirect:/actualites";
     }
 
     @GetMapping("/creations")

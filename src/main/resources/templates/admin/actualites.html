@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actualités — Les Merveilles de Philomène</title>
+<link rel="icon" href="/images/logo_secondaire.png">
+<link rel="stylesheet" th:href="@{/css/styles.css}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" th:href="@{/css/admin.css}">
+</head><body class="admin-body">
+<header th:replace="~{admin/fragments :: header}"></header>
+<main class="container admin-main">
+<div class="admin-page-title">
+    <h1 class="section-title">Actualités</h1>
+    <a href="/admin/actualites/nouvelle" class="btn btn-primary">+ Nouvelle actualité</a>
+</div>
+<p class="admin-alert admin-alert--success" th:if="${message}" th:text="${message}"></p>
+<p th:if="${#lists.isEmpty(news)}">Aucune actualité pour le moment.</p>
+<div class="admin-news-list">
+    <article class="admin-news-item" th:each="item : ${news}">
+        <img th:if="${item.hasImage}" th:src="${item.imageUrl}" alt="" class="admin-thumb">
+        <div><h2 th:text="${item.title}">Titre</h2>
+            <p th:text="${item.published} ? 'Publiée sur le site' : 'Brouillon — non visible sur le site'">Statut</p></div>
+        <a th:href="@{/admin/actualites/{id}/modifier(id=${item.id})}" class="btn btn-outline btn-small">Modifier</a>
+    </article>
+</div>
+</main></body></html>

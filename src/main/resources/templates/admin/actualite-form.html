@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actualités — Les Merveilles de Philomène</title>
+<link rel="icon" href="/images/logo_secondaire.png">
+<link rel="stylesheet" th:href="@{/css/styles.css}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" th:href="@{/css/admin.css}">
+</head><body class="admin-body">
+<header th:replace="~{admin/fragments :: header}"></header>
+<main class="container admin-main">
+<p><a href="/admin/actualites" class="link-arrow">← Retour aux actualités</a></p>
+<h1 class="section-title" th:text="${newsId == null} ? 'Nouvelle actualité' : 'Modifier l’actualité'">Actualité</h1>
+<form th:action="${newsId == null} ? @{/admin/actualites} : @{/admin/actualites/{id}(id=${newsId})}"
+      th:object="${newsForm}" method="post" enctype="multipart/form-data" class="admin-form">
+    <div class="admin-alert admin-alert--error" th:if="${#fields.hasGlobalErrors()}">
+        <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+    </div>
+    <label for="title">Titre</label>
+    <input type="text" th:field="*{title}" maxlength="200" required>
+    <p class="admin-field-error" th:errors="*{title}"></p>
+    <label for="description">Description</label>
+    <textarea th:field="*{description}" rows="8" maxlength="5000" required></textarea>
+    <p class="admin-field-error" th:errors="*{description}"></p>
+    <div th:if="${imageUrl != null}" class="admin-current-image">
+        <p>Image actuelle :</p><img th:src="${imageUrl}" alt="Image actuelle de l’actualité" class="admin-thumb-large">
+    </div>
+    <label for="image">Image</label>
+    <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp" aria-describedby="image-hint">
+    <p id="image-hint" class="admin-field-hint">JPG, PNG, GIF ou WEBP, 3 Mo maximum. Une image est nécessaire pour publier. Laissez vide pour conserver l’image actuelle.</p>
+    <div class="admin-checkbox-row">
+        <input type="checkbox" th:field="*{published}"><label for="published">Publier sur le site</label>
+    </div>
+    <p class="admin-field-hint">Décochez pour enregistrer un brouillon ou retirer cette actualité du site.</p>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
+</main><script th:src="@{/js/admin-product.js}" defer></script></body></html>
