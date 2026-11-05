@@ -44,6 +44,9 @@ public class Product {
     @Column(nullable = false)
     private boolean customizable;
 
+    @Column(nullable = false)
+    private boolean featured;
+
     // byte[] est chargé avec le produit et correspond à BYTEA dans PostgreSQL.
     // Ne pas utiliser @Lob : PostgreSQL le mapperait sur un OID, pas sur BYTEA.
     @Column(name = "image_data")
@@ -111,6 +114,14 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public boolean isFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
     }
 
     public boolean isCustomizable() {

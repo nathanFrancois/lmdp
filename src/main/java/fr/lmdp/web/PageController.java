@@ -37,7 +37,12 @@ public class PageController {
     @GetMapping("/creations")
     public String creations(Model model) {
         model.addAttribute("activePage", "creations");
-        model.addAttribute("products", productService.findVisible());
+        var visible = productService.findVisible();
+        var featured = visible.stream().filter(Product::isFeatured).findFirst().orElse(null);
+        model.addAttribute("featuredProduct", featured);
+        model.addAttribute("products", visible.stream()
+                .filter(product -> featured == null || !product.getId().equals(featured.getId()))
+                .toList());
         return "creations";
     }
 

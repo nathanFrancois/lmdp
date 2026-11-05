@@ -23,6 +23,27 @@
         </div>
     </section>
 
+    <section class="featured-creation container" th:if="${featuredProduct != null}"
+             th:with="product=${featuredProduct}" aria-labelledby="featured-title">
+        <div class="featured-creation-media">
+            <img th:if="${product.hasImage}" th:src="${product.imageUrl}" th:alt="${product.name}">
+            <div th:unless="${product.hasImage}" class="product-image-placeholder" role="img"
+                 th:attr="aria-label='Photographie non disponible pour ' + ${product.name}">Photo à venir</div>
+        </div>
+        <div class="featured-creation-content">
+            <span class="featured-creation-eyebrow">La merveille à la une</span>
+            <h2 id="featured-title" th:text="${product.name}">Une création singulière</h2>
+            <p class="featured-creation-description" th:text="${product.description}">Description</p>
+            <p class="featured-creation-price">
+                <span th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')}">0,00</span>&nbsp;€
+            </p>
+            <p class="product-availability"
+               th:classappend="${product.stock > 0} ? 'is-available' : 'is-unavailable'"
+               th:text="${product.stock > 0} ? 'En stock' : 'Rupture de stock'">En stock</p>
+            <a class="btn btn-primary" th:href="@{'/creations/' + ${product.id}}">Découvrir cette création <span aria-hidden="true">→</span></a>
+        </div>
+    </section>
+
     <section class="catalog" aria-label="Liste des créations">
         <div class="container">
             <ul class="product-grid product-grid--catalog">

@@ -30,7 +30,9 @@ public record ProductRequest(
 
         boolean available,
 
-        boolean customizable
+        boolean customizable,
+
+        boolean featured
 ) {
 }
 

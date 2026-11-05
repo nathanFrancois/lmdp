@@ -5,6 +5,10 @@ server:
     include-message: never
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 4MB
   thymeleaf:
     cache: ${THYMELEAF_CACHE}
   datasource:
