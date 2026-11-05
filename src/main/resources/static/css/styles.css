@@ -166,14 +166,14 @@ button:focus-visible,
 .brand-link { display: inline-flex; align-items: center; }
 
 .brand-logo {
-  height: 84px;
+  height: 96px;
   width: auto;
   display: block;
 }
 
 @media (min-width: 600px) {
   .brand-logo {
-    height: 110px;
+    height: 124px;
   }
 }
 
@@ -583,6 +583,32 @@ button:focus-visible,
   position: relative;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.product-card--featured {
+  grid-column: 1 / -1;
+  border: 2px solid var(--color-olive);
+  padding: 1.5rem;
+}
+
+.product-card--featured .product-photo,
+.product-card--featured .product-image-placeholder {
+  max-height: 420px;
+  object-fit: contain;
+  background: var(--color-cream-dark);
+}
+
+.product-card--featured .product-name {
+  font-size: 1.5rem;
+}
+
+.product-featured-badge {
+  align-self: flex-start;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: var(--color-lemon);
+  color: var(--color-forest);
+  font-weight: 700;
 }
 
 .product-card:hover,

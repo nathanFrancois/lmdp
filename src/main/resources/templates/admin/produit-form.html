@@ -61,7 +61,7 @@
 
         <label for="image">Photo de la création</label>
         <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
-        <p class="admin-field-hint">Formats acceptés : JPG, PNG, GIF, WEBP. Laissez vide pour conserver la photo actuelle.</p>
+        <p class="admin-field-hint">Formats acceptés : JPG, PNG, GIF, WEBP. Taille maximale : 3 Mo. Laissez vide pour conserver la photo actuelle.</p>
 
         <div class="admin-checkbox-row">
             <input type="checkbox" id="available" th:field="*{available}">
@@ -81,12 +81,22 @@
             page « Créations » (ajout au panier).
         </p>
 
+        <div class="admin-checkbox-row">
+            <input type="checkbox" id="featured" th:field="*{featured}">
+            <label for="featured">Mettre en avant sur la page « Créations »</label>
+        </div>
+        <p class="admin-field-hint">
+            La création apparaît en tête du catalogue avec une carte agrandie et un badge.
+            Cette option ne s'applique pas aux objets à personnaliser ni aux produits masqués.
+        </p>
+
         <button type="submit" class="btn btn-primary" th:text="${mode == 'create'} ? 'Créer le produit' : 'Enregistrer les modifications'">
             Enregistrer
         </button>
     </form>
 </main>
 
+<script src="/js/admin-product.js" defer></script>
 </body>
 </html>
 

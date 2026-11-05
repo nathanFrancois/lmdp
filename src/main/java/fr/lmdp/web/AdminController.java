@@ -46,7 +46,7 @@ public class AdminController {
     @GetMapping("/produits/nouveau")
     public String newProductForm(Model model) {
         if (!model.containsAttribute("productForm")) {
-            model.addAttribute("productForm", new ProductFormData(null, "", "", null, 0, true, false));
+            model.addAttribute("productForm", new ProductFormData(null, "", "", null, 0, true, false, false));
         }
         model.addAttribute("mode", "create");
         return "admin/produit-form";
@@ -59,7 +59,7 @@ public class AdminController {
         if (!model.containsAttribute("productForm")) {
             model.addAttribute("productForm", new ProductFormData(
                     product.getId(), product.getName(), product.getDescription(),
-                    product.getPrice(), product.getStock(), product.isAvailable(), product.isCustomizable()));
+                    product.getPrice(), product.getStock(), product.isAvailable(), product.isCustomizable(), product.isFeatured()));
         }
         model.addAttribute("productId", product.getId());
         model.addAttribute("imageUrl", product.getImageUrl());
@@ -76,7 +76,7 @@ public class AdminController {
             return "admin/produit-form";
         }
         productService.create(form.getId(), form.getName(), form.getDescription(), form.getPrice(),
-                form.getStock(), form.isAvailable(), form.isCustomizable(), image);
+                form.getStock(), form.isAvailable(), form.isCustomizable(), form.isFeatured(), image);
         redirectAttributes.addFlashAttribute("message", "Produit créé avec succès.");
         return "redirect:/admin";
     }
@@ -89,7 +89,7 @@ public class AdminController {
             return editProductForm(id, model);
         }
         productService.update(id, form.getName(), form.getDescription(), form.getPrice(),
-                form.getStock(), form.isAvailable(), form.isCustomizable(), image);
+                form.getStock(), form.isAvailable(), form.isCustomizable(), form.isFeatured(), image);
         redirectAttributes.addFlashAttribute("message", "Produit mis à jour avec succès.");
         return "redirect:/admin";
     }

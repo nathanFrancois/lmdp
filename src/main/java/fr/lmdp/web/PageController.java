@@ -37,7 +37,9 @@ public class PageController {
     @GetMapping("/creations")
     public String creations(Model model) {
         model.addAttribute("activePage", "creations");
-        model.addAttribute("products", productService.findVisible());
+        model.addAttribute("products", productService.findVisible().stream()
+                .sorted(java.util.Comparator.comparing(Product::isFeatured).reversed())
+                .toList());
         return "creations";
     }
 

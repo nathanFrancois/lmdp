@@ -70,12 +70,13 @@ public class ProductService {
      */
     @Transactional
     public Product create(String id, String name, String description, BigDecimal price, int stock,
-                          boolean available, boolean customizable, MultipartFile image) {
+                          boolean available, boolean customizable, boolean featured, MultipartFile image) {
         String productId = (id == null || id.isBlank()) ? slugify(name) : id;
         if (productRepository.existsById(productId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Un produit avec cet identifiant existe déjà.");
         }
         Product product = new Product(productId, name, description, price, stock, available, customizable);
+        product.setFeatured(featured && !customizable);
         applyImage(product, image);
         return productRepository.save(product);
     }
@@ -86,7 +87,7 @@ public class ProductService {
      */
     @Transactional
     public Product update(String id, String name, String description, BigDecimal price, int stock,
-                          boolean available, boolean customizable, MultipartFile image) {
+                          boolean available, boolean customizable, boolean featured, MultipartFile image) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produit introuvable"));
         product.setName(name);
@@ -95,6 +96,7 @@ public class ProductService {
         product.setStock(stock);
         product.setAvailable(available);
         product.setCustomizable(customizable);
+        product.setFeatured(featured && !customizable);
         applyImage(product, image);
         return productRepository.save(product);
     }
@@ -125,6 +127,10 @@ public class ProductService {
     private static void applyImage(Product product, MultipartFile image) {
         if (image == null || image.isEmpty()) {
             return;
+        }
+        if (image.getSize() > 3L * 1024 * 1024) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+                    "La taille de l’image ne doit pas dépasser 3 Mo.");
         }
         String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
         String contentType = switch (extension == null ? "" : extension.toLowerCase(Locale.ROOT)) {

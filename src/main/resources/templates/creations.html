@@ -26,7 +26,9 @@
     <section class="catalog" aria-label="Liste des créations">
         <div class="container">
             <ul class="product-grid product-grid--catalog">
-                <li class="product-card" th:each="product : ${products}">
+                <li class="product-card" th:each="product : ${products}"
+                    th:classappend="${product.featured} ? 'product-card--featured'">
+                    <span class="product-featured-badge" th:if="${product.featured}">Création à la une</span>
                     <a th:href="@{'/creations/' + ${product.id}}" class="product-card-link">
                         <img th:if="${product.hasImage}" th:src="${product.imageUrl}"
                              th:alt="${product.name}" class="product-photo">
