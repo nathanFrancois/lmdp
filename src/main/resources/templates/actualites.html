@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actualités — Les Merveilles de Philomène</title>
+<link rel="icon" href="/images/logo_secondaire.png">
+<link rel="stylesheet" th:href="@{/css/styles.css}">
+<meta name="description" content="Marchés, expositions et nouvelles des Merveilles de Philomène : suivez les actualités de l’artisan.">
+</head><body>
+<div th:replace="~{fragments/layout :: skip-link}"></div>
+<div th:replace="~{fragments/layout :: header(activePage='actualites')}"></div>
+<main id="contenu">
+<section class="page-intro container">
+    <h1 class="section-title">Mes actualités</h1>
+    <p class="section-note">Expositions, marchés et nouvelles de l’atelier : retrouvons-nous autour des merveilles.</p>
+</section>
+<section class="container news-feed" aria-label="Les dernières actualités">
+    <p th:if="${#lists.isEmpty(news)}" class="news-empty">De nouvelles actualités arrivent bientôt. En attendant, retrouvez-moi sur Instagram !</p>
+    <article class="news-card" th:each="item : ${news}">
+        <img th:if="${item.hasImage}" th:src="${item.imageUrl}" th:alt="${item.title}" loading="lazy" class="news-photo">
+        <div class="news-content">
+            <time th:if="${item.publishedAt != null}" th:datetime="${item.publishedAt}"
+                  th:text="${#temporals.format(item.publishedAt, 'dd/MM/yyyy')}">Date</time>
+            <h2 th:text="${item.title}">Titre de l’actualité</h2>
+            <p class="news-description" th:text="${item.description}">Description</p>
+        </div>
+    </article>
+</section>
+<aside class="container news-instagram" aria-label="Suivre les nouvelles sur Instagram">
+    <h2>Gardons le lien</h2>
+    <p>Pour plus d’actualités, allez voir mon Instagram.</p>
+    <a href="https://www.instagram.com/lesmerveillesdephilomen/" class="btn btn-primary"
+       target="_blank" rel="noopener noreferrer">Voir mon Instagram <span class="visually-hidden">(nouvel onglet)</span></a>
+</aside>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script th:src="@{/js/cart.js}" defer></script><script th:src="@{/js/main.js}" defer></script>
+</body></html>

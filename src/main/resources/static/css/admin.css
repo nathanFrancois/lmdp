@@ -205,3 +205,9 @@
   background: rgb(150, 20, 20);
 }
 
+
+.admin-header-inner, .admin-header-actions { flex-wrap: wrap; gap: .75rem; }
+.admin-news-list { display: grid; gap: 1rem; }
+.admin-news-item { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; background: #fff; padding: 1.25rem; border-radius: var(--radius-soft); }
+.admin-news-item > div { flex: 1; min-width: 180px; overflow-wrap: anywhere; }
+.admin-news-item h2 { margin: 0; font-family: var(--font-body); font-size: 1.1rem; }
