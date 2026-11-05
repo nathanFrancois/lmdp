@@ -566,11 +566,15 @@ button:focus-visible,
      réparties entre les cartes existantes, qui gardent donc toujours la
      même taille, qu'il y ait 1 ou 8 produits. */
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  /* Même hauteur pour toutes les cartes, y compris sur des lignes différentes. */
+  grid-auto-rows: 1fr;
   gap: 1.5rem;
   justify-content: start;
 }
 
 .product-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
   background: var(--color-cream);
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-soft);
@@ -660,8 +664,12 @@ button:focus-visible,
 
 .product-photo {
   width: 100%;
+  height: auto;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  /* Conserver le cadre commun sans rogner les photos portrait ou paysage. */
+  object-fit: contain;
+  object-position: center;
+  background: var(--color-cream-dark);
   border-radius: calc(var(--radius-soft) - 6px);
   display: block;
 }
