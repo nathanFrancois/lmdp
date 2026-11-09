@@ -174,3 +174,9 @@ Les tests contrôlent le montant serveur, la réutilisation du checkout, les not
 - [Webhooks](https://docs.ecommerce.cawl-solutions.fr/en/integration/api-developer-guide/webhooks)
 - [Cartes et scénarios de test](https://docs.ecommerce.cawl-solutions.fr/en/integration/test-cases)
 - [SDK officiel sur GitHub](https://github.com/Online-Payments/sdk-java)
+
+### Domaine public et retour CAWL
+
+Configurer `SHOP_BASE_URL=https://lmdp.net` en production. Cette valeur sert aux retours CAWL (`/commande/{reference}/retour`) et aux liens de suivi des e-mails. Le domaine public est utilisé par défaut et l’ancienne origine `https://lmdp.onrender.com` est normalisée vers `https://lmdp.net`. Les URL de développement restent configurables. Les sessions CAWL déjà ouvertes conservent leur ancienne URL de retour.
+
+La confirmation affiche un e-mail envoyé uniquement après acceptation par le service d’envoi (cela ne garantit pas la livraison en boîte de réception). Les anciennes commandes n’ont pas cette information et affichent un message prudent.

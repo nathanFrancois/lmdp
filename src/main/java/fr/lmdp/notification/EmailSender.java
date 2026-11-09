@@ -7,6 +7,8 @@ package fr.lmdp.notification;
  */
 public interface EmailSender {
 
+    default boolean isEnabled() { return true; }
+
     /**
      * @param toEmail     destinataire.
      * @param toName      nom du destinataire, affiché dans le client mail (peut être {@code null}).

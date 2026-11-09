@@ -16,7 +16,12 @@ import java.math.BigDecimal;
 public record ShopProperties(String baseUrl, BigDecimal shippingFee, String contactEmail) {
 
     public ShopProperties {
-        baseUrl = baseUrl == null ? "" : baseUrl.replaceAll("/+$", "");
+        baseUrl = baseUrl == null || baseUrl.isBlank() ? "https://lmdp.net" : baseUrl.strip().replaceAll("/+$", "");
+        // Ancienne origine de production : conserver les liens sur le domaine public.
+        if (baseUrl.equalsIgnoreCase("https://lmdp.onrender.com")
+                || baseUrl.equalsIgnoreCase("http://lmdp.onrender.com")) {
+            baseUrl = "https://lmdp.net";
+        }
         shippingFee = shippingFee == null ? BigDecimal.ZERO : shippingFee;
         contactEmail = contactEmail == null ? "" : contactEmail;
     }

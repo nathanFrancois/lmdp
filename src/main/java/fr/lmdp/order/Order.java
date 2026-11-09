@@ -167,6 +167,13 @@ public class Order {
         updatedAt = Instant.now();
     }
 
+    @Column(name = "confirmation_email_sent_at")
+    private Instant confirmationEmailSentAt;
+
+    public boolean isConfirmationEmailSent() { return confirmationEmailSentAt != null; }
+
+    public void markConfirmationEmailSent() { confirmationEmailSentAt = Instant.now(); }
+
     public boolean isPaid() {
         return paidAt != null;
     }

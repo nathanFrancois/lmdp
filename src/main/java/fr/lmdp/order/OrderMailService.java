@@ -36,7 +36,8 @@ public class OrderMailService {
      * aléatoire non séquentiel (voir {@link OrderReferenceGenerator}), donc impossible
      * à deviner par quelqu'un qui ne l'a pas reçue par e-mail.
      */
-    public void sendOrderConfirmation(Order order) {
+    public boolean sendOrderConfirmation(Order order) {
+        if (!emailSender.isEnabled()) return false;
         try {
             String trackingUrl = trackingUrl(order);
             String html = templateRenderer.render("commande-confirmation", Map.of(
@@ -46,8 +47,10 @@ public class OrderMailService {
             emailSender.send(order.getCustomer().getEmail(), order.getCustomer().getFullName(),
                     "Votre commande " + order.getReference() + " est confirmée",
                     html, textFallback(order, trackingUrl));
+            return true;
         } catch (RuntimeException e) {
             log.error("Commande {} : envoi de l'e-mail de confirmation impossible", order.getReference(), e);
+            return false;
         }
     }
 

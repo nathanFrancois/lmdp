@@ -15,30 +15,35 @@
 <div th:replace="~{fragments/layout :: header(activePage='panier')}"></div>
 
 <main id="contenu">
-    <section class="page-intro">
-        <div class="container">
-            <h1 class="section-title" th:if="${order.paid}">Merci pour votre commande !</h1>
-            <h1 class="section-title" th:unless="${order.paid}">Votre commande</h1>
-
-            <p class="section-note" th:if="${order.paid}">
-                Votre paiement a bien été confirmé. Un récapitulatif vous sera adressé et nous préparons
-                vos créations avec soin.
-            </p>
-            <p class="section-note" th:if="${order.status.name() == 'AWAITING_PAYMENT'}">
-                Votre paiement est en cours de confirmation. Cette page se met à jour dès que notre
-                prestataire nous transmet le résultat.
-            </p>
-            <p class="section-note" th:if="${order.status.name() == 'PAYMENT_FAILED'}">
-                Le paiement n'a pas abouti. Votre panier est conservé : vous pouvez réessayer depuis
-                la page <a href="/panier">panier</a>.
-            </p>
+    <section class="container payment-result" th:with="cancelled=${order.status.name() == 'CANCELLED'}">
+        <div class="payment-result-card" th:classappend="${cancelled or order.status.name() == 'PAYMENT_FAILED'} ? 'payment-result-card--notice'">
+            <span class="payment-result-icon" aria-hidden="true" th:text="${cancelled} ? '—' : (${order.paid} ? '✓' : (${order.awaitingPayment} ? '…' : '!'))">✓</span>
+            <p class="payment-result-eyebrow">Les Merveilles de Philomène</p>
+            <h1 th:if="${cancelled}">Votre commande est annulée</h1>
+            <h1 th:if="${!cancelled and order.paid}">Merci pour votre commande !</h1>
+            <h1 th:if="${!cancelled and order.awaitingPayment}">Confirmation en cours</h1>
+            <h1 th:if="${!cancelled and order.status.name() == 'PAYMENT_FAILED'}">Le paiement n’a pas abouti</h1>
+            <p th:if="${!cancelled and order.paid}">Votre paiement a bien été confirmé. Retrouvez ci-dessous le récapitulatif et l’avancement de votre commande.</p>
+            <p th:if="${cancelled}">Cette commande a été annulée. Pour toute question, contactez l’atelier en rappelant votre référence de commande.</p>
+            <div th:if="${!cancelled and order.paid}" class="payment-email-note">
+                <p th:if="${order.confirmationEmailSent}">Un e-mail de confirmation a été envoyé à <strong th:text="${order.customer.email}">votre adresse e-mail</strong>. Pensez à vérifier vos courriers indésirables.</p>
+                <p th:unless="${order.confirmationEmailSent}">Votre commande est bien confirmée, mais l’envoi de l’e-mail n’est pas confirmé. Conservez cette page et votre référence pour suivre votre commande.</p>
+            </div>
+            <p th:if="${order.awaitingPayment}">Nous attendons la confirmation de votre paiement. Ne lancez pas un nouveau paiement pendant cette vérification.</p>
+            <p th:if="${order.status.name() == 'PAYMENT_FAILED'}">Le paiement a été refusé ou interrompu. Vous pouvez revenir à votre panier pour vérifier vos articles et réessayer.</p>
+            <div class="payment-result-actions">
+                <a th:if="${order.awaitingPayment}" th:href="@{/commande/{reference}/retour(reference=${order.reference})}" class="btn btn-primary">Vérifier mon paiement</a>
+                <a th:if="${order.status.name() == 'PAYMENT_FAILED'}" href="/panier" class="btn btn-primary">Revenir au panier</a>
+                <a href="/creations" class="btn btn-outline">Découvrir les créations</a>
+            </div>
         </div>
     </section>
 
     <section class="order-section">
         <!-- Le panier n'est vidé que lorsque le paiement est confirmé côté serveur. -->
-        <div class="container" id="order-view" th:attr="data-clear-cart=${order.paid}">
+        <div class="container order-summary-card" id="order-view" th:attr="data-clear-cart=${order.paid}">
 
+            <h2 class="checkout-summary-title">Le récapitulatif de votre commande</h2>
             <dl class="order-meta">
                 <dt>Référence</dt>
                 <dd th:text="${order.reference}">LMDP-XXXX</dd>
@@ -61,7 +66,8 @@
                 </p>
             </div>
 
-            <table class="admin-table order-lines">
+            <div class="order-lines-scroll" role="region" aria-label="Articles commandés" tabindex="0">
+            <table class="order-lines">
                 <thead>
                 <tr>
                     <th>Création</th>
@@ -79,6 +85,7 @@
                 </tr>
                 </tbody>
             </table>
+            </div>
 
             <p class="cart-total" th:if="${order.shippingFee.signum() > 0}">
                 Frais de livraison :
