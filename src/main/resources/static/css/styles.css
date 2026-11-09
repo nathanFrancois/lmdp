@@ -56,18 +56,18 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
 
-  /* Fleur en filigrane, très estompée derrière le contenu, à gauche en haut de page. */
+  /* Cœurs en filigrane, très estompés derrière le contenu. */
   background-color: var(--color-cream);
   background-image:
     linear-gradient(rgba(234, 238, 221, 0.93), rgba(234, 238, 221, 0.93)),
-    url('/images/fleur_2.png');
+    url('/images/coeurs-fond.png');
   background-repeat: no-repeat, no-repeat;
   background-position: left top, 15% 25%;
   background-size: cover, min(420px, 55vw);
   background-attachment: scroll, fixed;
 }
 
-/* Image « fleur_fond_3 » (visuel texte) en filigrane, sous le contenu mais visible
+/* Motif de cœurs transparent en filigrane, sous le contenu mais visible
    au-dessus du fond crème. Positionnée sous l'en-tête (sticky, opaque) pour rester
    visible, tout en étant remontée en haut de page. */
 body::after {
@@ -77,8 +77,8 @@ body::after {
   right: 0;
   left: auto;
   width: min(480px, 60vw);
-  aspect-ratio: 3508 / 2480;
-  background-image: url('/images/fleur_fond_3.png');
+  aspect-ratio: 2048 / 1448;
+  background-image: url('/images/coeurs-fond.png');
   background-repeat: no-repeat;
   background-position: right top;
   background-size: contain;
