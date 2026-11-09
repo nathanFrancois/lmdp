@@ -30,6 +30,9 @@ public class EmailConfig {
     /** Envoi neutralisé : journalise sans échouer, tant que Brevo n'est pas configuré. */
     private static final class NoopEmailSender implements EmailSender {
         @Override
+        public boolean isEnabled() { return false; }
+
+        @Override
         public void send(String toEmail, String toName, String subject, String htmlContent, String textContent) {
             log.warn("Brevo non configuré : e-mail « {} » à {} non envoyé.", subject, toEmail);
         }

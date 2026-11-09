@@ -55,10 +55,12 @@ class OrderServiceTest {
     void confirmingPaymentTwiceDecreasesStockOnlyOnce() {
         Order order = orderService.place(request(DeliveryMethod.PICKUP, "vase:2"));
 
+        when(orderMailService.sendOrderConfirmation(order)).thenReturn(true);
         orderService.confirmPayment(order, "pay-1", "CAPTURED");
         orderService.confirmPayment(order, "pay-1", "CAPTURED");
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+        assertThat(order.isConfirmationEmailSent()).isTrue();
         verify(productService, times(1)).decreaseStock(eq("vase"), anyInt());
         verify(orderMailService, times(1)).sendOrderConfirmation(order);
     }

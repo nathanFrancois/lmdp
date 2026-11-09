@@ -53,7 +53,7 @@ class PaymentServiceTest {
         when(productService.findById("vase"))
                 .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true, false)));
 
-        ShopProperties shopProperties = new ShopProperties("http://localhost:8077", BigDecimal.ZERO, "");
+        ShopProperties shopProperties = new ShopProperties("https://lmdp.onrender.com", BigDecimal.ZERO, "");
         OrderService orderService = new OrderService(orderRepository, productService,
                 new OrderReferenceGenerator(), shopProperties, mock(OrderMailService.class));
         order = orderService.place(new CheckoutRequest(
@@ -67,6 +67,15 @@ class PaymentServiceTest {
                 new CawlProperties(PSPID, "key", "secret", "wh-key", "wh-secret",
                         URI.create("https://payment.preprod.cawl-solutions.fr/"), "test"),
                 shopProperties);
+    }
+
+    @Test
+    void startsCheckoutWithPublicDomainReturnUrl() {
+        when(gateway.openCheckout(any(), any())).thenReturn(
+                new PaymentGateway.HostedCheckoutSession("session", "https://payment.example/checkout"));
+        paymentService.startPayment(order);
+        org.mockito.Mockito.verify(gateway).openCheckout(order,
+                "https://lmdp.net/commande/" + order.getReference() + "/retour");
     }
 
     @Test

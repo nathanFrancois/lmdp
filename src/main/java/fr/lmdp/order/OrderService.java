@@ -105,8 +105,9 @@ public class OrderService {
             log.info("Commande {} payée (paiement {})", order.getReference(), paymentId);
         }
         orderRepository.save(order);
-        if (firstConfirmation) {
-            orderMailService.sendOrderConfirmation(order);
+        if (firstConfirmation && orderMailService.sendOrderConfirmation(order)) {
+            order.markConfirmationEmailSent();
+            orderRepository.save(order);
         }
     }
 

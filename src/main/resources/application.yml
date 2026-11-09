@@ -26,7 +26,7 @@ spring:
     locations: classpath:db/migration
 
 shop:
-  base-url: ${SHOP_BASE_URL}
+  base-url: ${SHOP_BASE_URL:https://lmdp.net}
   shipping-fee: ${SHOP_SHIPPING_FEE:6.90}
   contact-email: ${SHOP_CONTACT_EMAIL}
 
