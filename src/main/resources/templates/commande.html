@@ -37,7 +37,7 @@
 
             <form th:action="@{/commande}" th:object="${checkoutForm}" method="post" class="checkout-form"
                   id="checkout-form"
-                  th:attr="data-products-url=@{/api/produits},data-shipping-three=${shippingUpToThree},data-shipping-five=${shippingUpToFive},data-shipping-more=${shippingAboveFive}">
+                  th:attr="data-products-url=@{/api/produits/panier},data-shipping-three=${shippingUpToThree},data-shipping-five=${shippingUpToFive},data-shipping-more=${shippingAboveFive}">
 
                 <input type="hidden" th:field="*{cart}" id="cart-field">
 

@@ -12,6 +12,13 @@ public interface ProductRepository extends JpaRepository<fr.lmdp.catalog.Product
 
     List<fr.lmdp.catalog.Product> findByAvailableTrue();
 
+    @org.springframework.data.jpa.repository.Query("""
+            select new fr.lmdp.catalog.CartProduct(p.id, p.name, p.price, p.stock,
+                case when p.imageContentType is not null then true else false end)
+            from Product p where p.id in :ids and p.available = true and p.customizable = false
+            """)
+    List<CartProduct> findCartProducts(@org.springframework.data.repository.query.Param("ids") List<String> ids);
+
     @org.springframework.data.jpa.repository.Query(value =
             "SELECT id FROM catalog_feature_lock WHERE id = 1 FOR UPDATE", nativeQuery = true)
     Integer lockFeaturedSelection();

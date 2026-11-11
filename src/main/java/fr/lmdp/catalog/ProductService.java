@@ -31,6 +31,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public List<CartProduct> findCartProducts(List<String> ids) {
+        return ids.isEmpty() ? List.of() : productRepository.findCartProducts(ids);
+    }
+
     public List<Product> findAll() {
         return productRepository.findAll();
     }

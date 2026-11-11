@@ -7,7 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Représente un objet en verre proposé à la vente : soit déjà gravé et vendu
@@ -150,10 +151,11 @@ public class Product {
         return imageData != null && imageData.length > 0 && imageContentType != null;
     }
 
-    /** Image intégrée au produit retourné, sans requête HTTP supplémentaire. */
+    /** Image servie séparément, avec revalidation HTTP, sans alourdir le HTML/JSON. */
     public String getImageUrl() {
         return isHasImage()
-                ? "data:" + imageContentType + ";base64," + Base64.getEncoder().encodeToString(imageData)
+                ? (available ? "/api/produits/" : "/api/admin/produits/")
+                    + UriUtils.encodePathSegment(id, StandardCharsets.UTF_8) + "/image"
                 : null;
     }
 }
