@@ -43,7 +43,8 @@ public class OrderService {
     public Order place(CheckoutRequest request) {
         List<OrderLine> lines = buildLines(request.cart());
         Order order = Order.create(referenceGenerator.generate(), request.customer(), request.deliveryMethod(),
-                request.shippingAddress(), lines, shopProperties.shippingFee());
+                request.shippingAddress(), lines, ShippingRates.forQuantity(
+                        lines.stream().mapToLong(OrderLine::getQuantity).sum()));
         Order saved = orderRepository.save(order);
         log.info("Commande {} créée ({} ligne(s), total {} {})", saved.getReference(), lines.size(),
                 saved.getTotalAmount(), saved.getCurrency());
@@ -105,9 +106,12 @@ public class OrderService {
             log.info("Commande {} payée (paiement {})", order.getReference(), paymentId);
         }
         orderRepository.save(order);
-        if (firstConfirmation && orderMailService.sendOrderConfirmation(order)) {
-            order.markConfirmationEmailSent();
-            orderRepository.save(order);
+        if (firstConfirmation) {
+            if (orderMailService.sendOrderConfirmation(order)) {
+                order.markConfirmationEmailSent();
+                orderRepository.save(order);
+            }
+            orderMailService.sendSellerNotification(order);
         }
     }
 

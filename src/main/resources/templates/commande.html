@@ -37,7 +37,7 @@
 
             <form th:action="@{/commande}" th:object="${checkoutForm}" method="post" class="checkout-form"
                   id="checkout-form"
-                  th:attr="data-products-url=@{/api/produits},data-shipping-fee=${shippingFee}">
+                  th:attr="data-products-url=@{/api/produits},data-shipping-three=${shippingUpToThree},data-shipping-five=${shippingUpToFive},data-shipping-more=${shippingAboveFive}">
 
                 <input type="hidden" th:field="*{cart}" id="cart-field">
 
@@ -67,23 +67,28 @@
                         <fieldset class="checkout-fieldset">
                             <legend>Mode de remise</legend>
 
-                            <div class="checkout-radio">
-                                <input type="radio" id="delivery-pickup" th:field="*{deliveryMethod}" value="PICKUP">
-                                <label for="delivery-pickup">
-                                    Remise en main propre
-                                    <span class="checkout-radio-hint">Sans frais, sur rendez-vous à l'atelier.</span>
-                                </label>
-                            </div>
-
-                            <div class="checkout-radio">
-                                <input type="radio" id="delivery-shipping" th:field="*{deliveryMethod}" value="SHIPPING">
-                                <label for="delivery-shipping">
-                                    Livraison à domicile
-                                    <span class="checkout-radio-hint">
-                                        Frais de livraison :
-                                        <span th:text="${#numbers.formatDecimal(shippingFee, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span>
-                                    </span>
-                                </label>
+                            <div class="delivery-options">
+                                <div class="delivery-option">
+                                    <input type="radio" id="delivery-pickup" th:field="*{deliveryMethod}" value="PICKUP" aria-describedby="pickup-details">
+                                    <label for="delivery-pickup" class="delivery-option-card">
+                                        <span class="delivery-option-heading">Remise en main propre <span class="delivery-price">Gratuite</span></span>
+                                        <span class="delivery-zone">Uniquement dans le canton de Genève et le Chablais (74)</span>
+                                        <span id="pickup-details" class="delivery-option-description">Une fois votre commande validée, l’artisan vous contactera pour convenir des modalités et du lieu de rendez-vous.</span>
+                                        <span class="delivery-option-note">Choisissez cette option uniquement si vous pouvez vous déplacer dans cette zone.</span>
+                                    </label>
+                                </div>
+                                <div class="delivery-option">
+                                    <input type="radio" id="delivery-shipping" th:field="*{deliveryMethod}" value="SHIPPING" aria-describedby="shipping-details">
+                                    <label for="delivery-shipping" class="delivery-option-card">
+                                        <span class="delivery-option-heading">Livraison à domicile <span id="delivery-price" class="delivery-price">Selon le panier</span></span>
+                                        <span id="shipping-details" class="delivery-option-description">En France métropolitaine. Tarif selon le nombre total d’articles, quantités comprises.</span>
+                                        <span class="delivery-tiers">
+                                            <span>1 à 3 articles <strong th:text="${#numbers.formatDecimal(shippingUpToThree, 1, 'POINT', 2, 'COMMA')} + ' €'">6,90 €</strong></span>
+                                            <span>4 à 5 articles <strong th:text="${#numbers.formatDecimal(shippingUpToFive, 1, 'POINT', 2, 'COMMA')} + ' €'">7,90 €</strong></span>
+                                            <span>6 articles et plus <strong th:text="${#numbers.formatDecimal(shippingAboveFive, 1, 'POINT', 2, 'COMMA')} + ' €'">9,90 €</strong></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                             <p class="admin-field-error" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}"></p>
                         </fieldset>
@@ -116,10 +121,14 @@
                         <div id="checkout-summary-lines">
                             <p>Chargement du panier…</p>
                         </div>
-                        <p class="cart-total">
+                        <div class="checkout-delivery-summary" aria-live="polite">
+                            <p><span id="checkout-delivery-label">Mode de remise</span><strong id="checkout-shipping">—</strong></p>
+                            <p id="checkout-delivery-note"></p>
+                        </div>
+                        <p class="cart-total" aria-live="polite">
                             Total à payer : <strong id="checkout-total">—</strong>
                         </p>
-                        <button type="submit" class="btn btn-primary" id="checkout-submit">
+                        <button type="submit" class="btn btn-primary" id="checkout-submit" disabled>
                             Payer en ligne
                         </button>
                         <p><a href="/panier" class="link-arrow">← Retour au panier</a></p>

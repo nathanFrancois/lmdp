@@ -180,3 +180,9 @@ Les tests contrôlent le montant serveur, la réutilisation du checkout, les not
 Configurer `SHOP_BASE_URL=https://lmdp.net` en production. Cette valeur sert aux retours CAWL (`/commande/{reference}/retour`) et aux liens de suivi des e-mails. Le domaine public est utilisé par défaut et l’ancienne origine `https://lmdp.onrender.com` est normalisée vers `https://lmdp.net`. Les URL de développement restent configurables. Les sessions CAWL déjà ouvertes conservent leur ancienne URL de retour.
 
 La confirmation affiche un e-mail envoyé uniquement après acceptation par le service d’envoi (cela ne garantit pas la livraison en boîte de réception). Les anciennes commandes n’ont pas cette information et affichent un message prudent.
+
+### Remise et notification vendeur
+
+La remise en main propre est gratuite, uniquement dans le canton de Genève et le Chablais (74). Après paiement confirmé, l’artisan contacte le client pour fixer les modalités et le lieu de rendez-vous. La livraison en France métropolitaine coûte 6,90 € pour 1 à 3 articles, 7,90 € pour 4 à 5 et 9,90 € à partir de 6 (somme des quantités, pas le nombre de références). Le barème serveur `ShippingRates` est aussi transmis à la page de commande ; l’ancienne variable `SHOP_SHIPPING_FEE` n’est plus utilisée pour les nouvelles commandes. Les commandes existantes conservent leurs frais.
+
+À la première confirmation du paiement, une notification vendeur distincte est envoyée à `contact@lmdp.net`, avec les articles, coordonnées, mode de remise et lien vers l’administration. Elle est indépendante du succès de l’e-mail client. Brevo doit être configuré ; les erreurs sont journalisées sans annuler le paiement, sans réessai automatique.

@@ -11,6 +11,19 @@ import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
 
 class OrderMailServiceTest {
+    @Test void sellerNotificationUsesRequestedAddressAndAdminLink() {
+        var sender = mock(EmailSender.class);
+        when(sender.isEnabled()).thenReturn(true);
+        var renderer = mock(EmailTemplateRenderer.class);
+        when(renderer.render(eq("commande-vendeur"), anyMap())).thenReturn("<p>Nouvelle commande</p>");
+        var service = new OrderMailService(sender, renderer, new ShopProperties("https://lmdp.net", BigDecimal.ZERO, "other@example.com"));
+        var order = Order.create("REF", new Customer("Claire", "Martin", "claire@example.com", null), DeliveryMethod.PICKUP, null, List.of(), BigDecimal.ZERO);
+        assertThat(service.sendSellerNotification(order)).isTrue();
+        verify(sender).send(eq("contact@lmdp.net"), anyString(), contains("REF"), anyString(), contains("https://lmdp.net/admin/commandes/REF"));
+        doThrow(new IllegalStateException("Unavailable")).when(sender).send(anyString(), anyString(), anyString(), anyString(), anyString());
+        assertThat(service.sendSellerNotification(order)).isFalse();
+    }
+
     @Test void reportsSuccessOnlyWhenSenderAcceptsMessage() {
         var sender = mock(EmailSender.class);
         when(sender.isEnabled()).thenReturn(true);

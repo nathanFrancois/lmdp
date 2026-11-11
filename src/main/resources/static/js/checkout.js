@@ -12,7 +12,11 @@
     var totalLabel = document.getElementById('checkout-total');
     var submitButton = document.getElementById('checkout-submit');
     var addressFields = document.getElementById('shipping-address-fields');
-    var shippingFee = parseFloat(form.getAttribute('data-shipping-fee')) || 0;
+    var shippingThree = Number(form.getAttribute('data-shipping-three'));
+    var shippingFive = Number(form.getAttribute('data-shipping-five'));
+    var shippingMore = Number(form.getAttribute('data-shipping-more'));
+    var itemCount = 0;
+    var loaded = false;
     var itemsTotal = 0;
 
     function selectedDeliveryMethod() {
@@ -21,9 +25,21 @@
     }
 
     function refreshTotals() {
-        var shipping = selectedDeliveryMethod() === 'SHIPPING' ? shippingFee : 0;
-        totalLabel.textContent = cart.formatPrice(itemsTotal + shipping) + ' €';
-        addressFields.hidden = shipping === 0;
+        var isShipping = selectedDeliveryMethod() === 'SHIPPING';
+        var shippingFee = itemCount <= 3 ? shippingThree : itemCount <= 5 ? shippingFive : shippingMore;
+        var shipping = isShipping ? shippingFee : 0;
+        totalLabel.textContent = loaded ? cart.formatPrice(itemsTotal + shipping) + ' €' : '—';
+        addressFields.hidden = !isShipping;
+        addressFields.disabled = !isShipping;
+        ['street', 'postalCode', 'city'].forEach(function (id) {
+            document.getElementById(id).required = isShipping;
+        });
+        document.getElementById('delivery-price').textContent = loaded ? cart.formatPrice(shippingFee) + ' €' : 'Selon le panier';
+        document.getElementById('checkout-delivery-label').textContent = isShipping ? 'Livraison · ' + itemCount + ' article(s)' : 'Remise en main propre';
+        document.getElementById('checkout-shipping').textContent = !loaded ? '—' : isShipping ? cart.formatPrice(shipping) + ' €' : 'Gratuite';
+        document.getElementById('checkout-delivery-note').textContent = isShipping
+            ? 'Livraison en France métropolitaine.'
+            : 'Canton de Genève et Chablais (74) uniquement. L’artisan vous contactera après validation pour fixer le rendez-vous.';
     }
 
     function renderEmptyCart() {
@@ -33,9 +49,12 @@
     }
 
     function renderLines(lines) {
+        itemsTotal = 0;
+        itemCount = 0;
         var html = '<ul class="checkout-lines">';
         lines.forEach(function (line) {
             itemsTotal += line.lineTotal;
+            itemCount += Number(line.quantity);
             html += '<li class="checkout-line">'
                 + '<span class="checkout-line-name">' + line.product.name + '</span>'
                 + '<span class="checkout-line-qty">× ' + line.quantity + '</span>'
@@ -59,7 +78,12 @@
             return;
         }
         renderLines(lines);
+        loaded = true;
+        submitButton.disabled = false;
         refreshTotals();
+    }).catch(function () {
+        summary.textContent = 'Le panier n’a pas pu être chargé. Actualisez la page pour réessayer.';
+        submitButton.disabled = true;
     });
 
     form.querySelectorAll('input[name="deliveryMethod"]').forEach(function (input) {
