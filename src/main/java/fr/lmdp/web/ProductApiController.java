@@ -31,6 +31,16 @@ public class ProductApiController {
         return productService.findVisible();
     }
 
+    @GetMapping("/panier")
+    public List<fr.lmdp.catalog.CartProduct> cart(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) List<String> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        if (ids.size() > 30 || ids.stream().anyMatch(id -> id.isBlank() || id.length() > 64)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Panier invalide");
+        }
+        return productService.findCartProducts(ids.stream().distinct().toList());
+    }
+
     @GetMapping("/{id}")
     public Product byId(@PathVariable String id) {
         return productService.findById(id)

@@ -37,8 +37,15 @@
 
     function fetchProducts(url) {
         var cart = getCart();
-        return fetch(url)
-            .then(function (response) { return response.json(); })
+        var ids = Object.keys(cart);
+        if (ids.length === 0) return Promise.resolve([]);
+        var params = new URLSearchParams();
+        ids.forEach(function (id) { params.append('ids', id); });
+        return fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + params.toString(), {cache: 'no-store'})
+            .then(function (response) {
+                if (!response.ok) throw new Error('Chargement du panier impossible');
+                return response.json();
+            })
             .then(function (products) {
                 return products
                     .filter(function (p) { return cart[p.id]; })
@@ -47,6 +54,12 @@
                         return { product: p, quantity: quantity, lineTotal: p.price * quantity };
                     });
             });
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (char) {
+            return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char];
+        });
     }
 
     // API partagée avec les autres scripts de la boutique.
@@ -91,73 +104,95 @@
 
     // --- Page panier : affichage et gestion des lignes ---
     var app = document.getElementById('cart-app');
-    if (app) {
+    var cachedProducts = [];
+    function renderCart() {
+        if (!app) return;
         if (isEmpty()) {
             app.innerHTML = '<p>Votre panier est vide. <a href="/creations">Découvrir les créations</a></p>';
         } else {
-            fetchProducts(app.getAttribute('data-products-url')).then(function (lines) {
-                var total = 0;
-                var html = '<ul class="cart-list">';
-
-                lines.forEach(function (line) {
-                    var p = line.product;
-                    total += line.lineTotal;
-                    var imageHtml = p.imageUrl
-                        ? '<img src="' + p.imageUrl + '" alt="' + p.name + '" class="product-photo">'
-                        : '<div class="product-image-placeholder" role="img" aria-label="Photo non disponible pour ' + p.name + '"><span aria-hidden="true">Photo à venir</span></div>';
-                    html += '<li class="cart-line">'
-                        + '<div class="cart-line-image">' + imageHtml + '</div>'
-                        + '<div class="cart-line-info"><h2 class="cart-line-name">' + p.name + '</h2>'
-                        + '<p class="cart-line-unit-price">' + formatPrice(p.price) + '&nbsp;€ / unité</p></div>'
-                        + '<input type="number" min="1" value="' + line.quantity + '" class="qty-input js-qty" data-id="' + p.id + '">'
-                        + '<p class="cart-line-total">' + formatPrice(line.lineTotal) + '&nbsp;€</p>'
-                        + '<button type="button" class="cart-remove-btn js-remove" data-id="' + p.id + '">Retirer</button>'
-                        + '</li>';
-                });
-
-                html += '</ul><div class="cart-summary">'
-                    + '<p class="cart-total">Total : <strong>' + formatPrice(total) + '&nbsp;€</strong></p>'
-                    + '<div class="cart-summary-actions">'
-                    + '<button type="button" id="clear-cart" class="btn btn-outline">Vider le panier</button>'
-                    + '<a href="/commande" class="btn btn-primary">Passer commande</a>'
-                    + '</div>'
-                    + '<p><a href="/creations" class="link-arrow">← Continuer mes achats</a></p>'
-                    + '</div>';
-
-                app.innerHTML = html;
-
-                app.querySelectorAll('.js-qty').forEach(function (input) {
-                    input.addEventListener('change', function () {
-                        var c = getCart();
-                        var value = parseInt(input.value, 10);
-                        if (!value || value < 1) {
-                            delete c[input.getAttribute('data-id')];
-                        } else {
-                            c[input.getAttribute('data-id')] = value;
-                        }
-                        saveCart(c);
-                        window.location.reload();
-                    });
-                });
-
-                app.querySelectorAll('.js-remove').forEach(function (button) {
-                    button.addEventListener('click', function () {
-                        var c = getCart();
-                        delete c[button.getAttribute('data-id')];
-                        saveCart(c);
-                        window.location.reload();
-                    });
-                });
-
-                var clearButton = document.getElementById('clear-cart');
-                if (clearButton) {
-                    clearButton.addEventListener('click', function () {
-                        clearCart();
-                        window.location.reload();
-                    });
-                }
+            var cart = getCart();
+            var lines = cachedProducts.filter(function (p) { return cart[p.id]; }).map(function (p) {
+                return {product: p, quantity: cart[p.id], lineTotal: p.price * cart[p.id]};
             });
+            if (!lines.length) {
+                app.innerHTML = '<p>Les articles de votre panier ne sont plus disponibles. <a href="/creations">Voir les créations</a></p>';
+                return;
+            }
+            var total = 0;
+            var html = '<ul class="cart-list">';
+
+            lines.forEach(function (line) {
+                var p = line.product;
+                total += line.lineTotal;
+                var imageHtml = p.imageUrl
+                    ? '<img src="' + escapeHtml(p.imageUrl) + '" alt="' + escapeHtml(p.name) + '" class="product-photo" loading="lazy" decoding="async">'
+                    : '<div class="product-image-placeholder" role="img" aria-label="Photo non disponible pour ' + escapeHtml(p.name) + '"><span aria-hidden="true">Photo à venir</span></div>';
+                html += '<li class="cart-line">'
+                    + '<div class="cart-line-image">' + imageHtml + '</div>'
+                    + '<div class="cart-line-info"><h2 class="cart-line-name">' + escapeHtml(p.name) + '</h2>'
+                    + '<p class="cart-line-unit-price">' + formatPrice(p.price) + '&nbsp;€ / unité</p></div>'
+                    + '<input type="number" min="1" value="' + line.quantity + '" class="qty-input js-qty" data-id="' + escapeHtml(p.id) + '">'
+                    + '<p class="cart-line-total">' + formatPrice(line.lineTotal) + '&nbsp;€</p>'
+                    + '<button type="button" class="cart-remove-btn js-remove" data-id="' + escapeHtml(p.id) + '">Retirer</button>'
+                    + '</li>';
+            });
+
+            html += '</ul><div class="cart-summary">'
+                + '<p class="cart-total">Total : <strong>' + formatPrice(total) + '&nbsp;€</strong></p>'
+                + '<div class="cart-summary-actions">'
+                + '<button type="button" id="clear-cart" class="btn btn-outline">Vider le panier</button>'
+                + '<a href="/commande" class="btn btn-primary">Passer commande</a>'
+                + '</div>'
+                + '<p><a href="/creations" class="link-arrow">← Continuer mes achats</a></p>'
+                + '</div>';
+
+            app.innerHTML = html;
+
+            app.querySelectorAll('.js-qty').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    var c = getCart();
+                    var value = parseInt(input.value, 10);
+                    if (!value || value < 1) {
+                        delete c[input.getAttribute('data-id')];
+                    } else {
+                        c[input.getAttribute('data-id')] = value;
+                    }
+                    saveCart(c);
+                    renderCart();
+                    updateBadge();
+                });
+            });
+
+            app.querySelectorAll('.js-remove').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var c = getCart();
+                    delete c[button.getAttribute('data-id')];
+                    saveCart(c);
+                    renderCart();
+                    updateBadge();
+                });
+            });
+
+            var clearButton = document.getElementById('clear-cart');
+            if (clearButton) {
+                clearButton.addEventListener('click', function () {
+                    clearCart();
+                    renderCart();
+                    updateBadge();
+                });
+            }
         }
+    }
+
+    if (app) {
+        if (isEmpty()) renderCart();
+        else fetchProducts(app.getAttribute('data-products-url')).then(function (lines) {
+            cachedProducts = lines.map(function (line) { return line.product; });
+            renderCart();
+        }).catch(function () {
+            app.innerHTML = '<p>Le panier n’a pas pu être chargé. <button type="button" id="retry-cart">Réessayer</button></p>';
+            document.getElementById('retry-cart').addEventListener('click', function () { window.location.reload(); });
+        });
     }
 
     updateBadge();

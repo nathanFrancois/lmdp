@@ -1,4 +1,8 @@
 server:
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: text/html,text/css,text/javascript,application/javascript,application/json,image/svg+xml
   address: ${SERVER_ADDRESS}
   port: ${PORT}
   error:

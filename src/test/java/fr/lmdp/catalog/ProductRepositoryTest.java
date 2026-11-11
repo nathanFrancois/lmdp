@@ -17,6 +17,21 @@ class ProductRepositoryTest {
     @Autowired private jakarta.persistence.EntityManager entityManager;
 
     @Test
+    void cartProjectionExcludesUnrequestedHiddenAndCustomizableProducts() {
+        var visible = new Product("wanted", "Vase", "Description", BigDecimal.TEN, 3, true, false);
+        visible.setImage(new byte[3 * 1024 * 1024], "image/png");
+        repository.saveAll(java.util.List.of(visible,
+                new Product("hidden", "Hidden", "Description", BigDecimal.TEN, 1, false, false),
+                new Product("custom", "Custom", "Description", BigDecimal.TEN, 1, true, true),
+                new Product("other", "Other", "Description", BigDecimal.TEN, 1, true, false)));
+        repository.flush();
+        entityManager.clear();
+        var result = repository.findCartProducts(java.util.List.of("wanted", "hidden", "custom"));
+        assertThat(result).extracting(CartProduct::id).containsExactly("wanted");
+        assertThat(result.get(0).getImageUrl()).isEqualTo("/api/produits/wanted/image");
+    }
+
+    @Test
     void selectingAnotherProductReplacesPreviousSelection() {
         var service = new ProductService(repository);
         service.create("first", "Premier", "Gravure", BigDecimal.TEN, 1, true, false, true, null);
