@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class CheckoutConfirmationTest {
     @Autowired MockMvc mvc;
+    @Autowired org.thymeleaf.TemplateEngine templateEngine;
     @MockitoBean OrderService orders;
     @MockitoBean PaymentService payments;
     @org.springframework.boot.test.context.TestConfiguration
@@ -34,6 +35,22 @@ class CheckoutConfirmationTest {
         when(orders.findByReference("REF")).thenReturn(Optional.of(order));
         return order;
     }
+    @Test void checkoutShowsPickupZoneAndShippingRates() throws Exception {
+        mvc.perform(get("/commande")).andExpect(status().isOk())
+            .andExpect(content().string(containsString("canton de Genève et le Chablais (74)")))
+            .andExpect(content().string(containsString("lieu de rendez-vous")))
+            .andExpect(content().string(containsString("data-shipping-three=\"6.90\"")))
+            .andExpect(content().string(containsString("data-shipping-five=\"7.90\"")))
+            .andExpect(content().string(containsString("data-shipping-more=\"9.90\"")));
+    }
+
+    @Test void sellerEmailTemplateRendersPickupDetails() {
+        var order = order(); order.markPaid("p", "CAPTURED");
+        var html = new fr.lmdp.notification.EmailTemplateRenderer(templateEngine).render("commande-vendeur",
+                java.util.Map.of("order", order, "adminUrl", "https://lmdp.net/admin/commandes/REF"));
+        org.assertj.core.api.Assertions.assertThat(html).contains("claire@example.com", "lieu de rendez-vous", "29,90", "https://lmdp.net/admin/commandes/REF");
+    }
+
     @Test void paidAndEmailSent() throws Exception {
         var order = order(); order.markPaid("p", "CAPTURED"); order.markConfirmationEmailSent();
         mvc.perform(get("/commande/REF")).andExpect(status().isOk())

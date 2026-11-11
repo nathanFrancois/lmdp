@@ -61,6 +61,11 @@
                             <strong>Total : <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')} + ' €'">0,00 €</span></strong>
                         </p>
 
+            <p th:if="${order.paid and order.status.name() != 'CANCELLED' and order.deliveryMethod.name() == 'PICKUP'}">
+                <strong>Remise en main propre — canton de Genève et Chablais (74) uniquement.</strong>
+                L’artisan vous contactera pour convenir des modalités et du lieu de rendez-vous.
+            </p>
+
                         <div th:if="${order.shippingAddress != null}" style="font-size:14px; line-height:1.6; margin-bottom:16px;">
                             <strong>Adresse de livraison</strong><br>
                             <span th:text="${order.customer.fullName}">Client</span><br>

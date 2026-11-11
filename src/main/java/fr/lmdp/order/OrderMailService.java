@@ -54,6 +54,27 @@ public class OrderMailService {
         }
     }
 
+    /** Notification indépendante de l'e-mail client, après validation du paiement. */
+    public boolean sendSellerNotification(Order order) {
+        if (!emailSender.isEnabled()) return false;
+        try {
+            String adminUrl = shopProperties.url("/admin/commandes/" + order.getReference());
+            String html = templateRenderer.render("commande-vendeur", Map.of("order", order, "adminUrl", adminUrl));
+            String text = "Nouvelle commande payée : " + order.getReference()
+                    + "\nClient : " + order.getCustomer().getFullName()
+                    + "\nE-mail : " + order.getCustomer().getEmail()
+                    + "\nMode de remise : " + order.getDeliveryMethod().getLabel()
+                    + "\nTotal : " + order.getTotalAmount() + " EUR"
+                    + "\nConsulter la commande : " + adminUrl;
+            emailSender.send("contact@lmdp.net", "Les Merveilles de Philomène",
+                    "Nouvelle commande payée — " + order.getReference(), html, text);
+            return true;
+        } catch (RuntimeException e) {
+            log.error("Commande {} : notification vendeur impossible", order.getReference(), e);
+            return false;
+        }
+    }
+
     private String trackingUrl(Order order) {
         return shopProperties.url("/commande/" + order.getReference());
     }

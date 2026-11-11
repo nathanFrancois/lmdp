@@ -30,7 +30,7 @@ class OrderServiceTest {
     void setUp() {
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(productService.findById("vase"))
-                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 5, true, false)));
+                .thenReturn(Optional.of(new Product("vase", "Vase", "Un vase", new BigDecimal("19.90"), 20, true, false)));
         orderService = new OrderService(orderRepository, productService, new OrderReferenceGenerator(),
                 new ShopProperties("http://localhost:8077", new BigDecimal("6.90"), ""), orderMailService);
     }
@@ -47,7 +47,7 @@ class OrderServiceTest {
 
     @Test
     void refusesOrderWhenStockIsInsufficient() {
-        assertThatThrownBy(() -> orderService.place(request(DeliveryMethod.PICKUP, "vase:9")))
+        assertThatThrownBy(() -> orderService.place(request(DeliveryMethod.PICKUP, "vase:99")))
                 .isInstanceOf(CheckoutException.class);
     }
 
@@ -63,6 +63,35 @@ class OrderServiceTest {
         assertThat(order.isConfirmationEmailSent()).isTrue();
         verify(productService, times(1)).decreaseStock(eq("vase"), anyInt());
         verify(orderMailService, times(1)).sendOrderConfirmation(order);
+        verify(orderMailService, times(1)).sendSellerNotification(order);
+    }
+
+    @Test
+    void shippingCountsAllUnitsAtEachBoundary() {
+        int[] quantities = {1, 3, 4, 5, 6, 12};
+        String[] fees = {"6.90", "6.90", "7.90", "7.90", "9.90", "9.90"};
+        for (int i = 0; i < quantities.length; i++) {
+            var order = orderService.place(request(DeliveryMethod.SHIPPING, "vase:" + quantities[i]));
+            assertThat(order.getShippingFee()).isEqualByComparingTo(fees[i]);
+            assertThat(order.getTotalAmount()).isEqualByComparingTo(
+                    new BigDecimal("19.90").multiply(BigDecimal.valueOf(quantities[i])).add(new BigDecimal(fees[i])));
+            assertThat(orderService.place(request(DeliveryMethod.PICKUP, "vase:" + quantities[i])).getShippingFee()).isZero();
+        }
+    }
+
+    @Test
+    void failedCustomerEmailStillNotifiesSeller() {
+        var order = orderService.place(request(DeliveryMethod.PICKUP, "vase:1"));
+        when(orderMailService.sendOrderConfirmation(order)).thenReturn(false);
+        orderService.confirmPayment(order, "pay-1", "CAPTURED");
+        verify(orderMailService).sendSellerNotification(order);
+    }
+
+    @Test
+    void unpaidOrdersDoNotNotifySeller() {
+        var order = orderService.place(request(DeliveryMethod.PICKUP, "vase:1"));
+        orderService.rejectPayment(order, "REJECTED");
+        verify(orderMailService, org.mockito.Mockito.never()).sendSellerNotification(any());
     }
 
     private CheckoutRequest request(DeliveryMethod method, String cart) {

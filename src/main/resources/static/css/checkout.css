@@ -168,3 +168,26 @@
   .order-summary-card .order-meta dd { margin-bottom: .8rem; }
   .payment-result-actions .btn { width: 100%; }
 }
+
+/* Choix de remise : toute la carte est cliquable, radio et focus restent visibles. */
+.delivery-options { display: grid; gap: 1rem; }
+.delivery-option { position: relative; }
+.delivery-option > input { position: absolute; top: 1.4rem; left: 1rem; margin: 0; accent-color: var(--color-forest); width: 1.1rem; height: 1.1rem; }
+.checkout-fieldset .delivery-option-card { display: flex; flex-direction: column; gap: .75rem; margin: 0; padding: 1.1rem 1.1rem 1.1rem 2.9rem; border: 2px solid var(--color-border-soft); border-radius: 16px; background: #fff; cursor: pointer; font-weight: 400; }
+.delivery-option > input:checked + .delivery-option-card { border-color: var(--color-olive); background: var(--color-cream); box-shadow: 0 0 0 1px var(--color-olive); }
+.delivery-option > input:focus-visible + .delivery-option-card { outline: 3px solid var(--color-forest); outline-offset: 4px; }
+.delivery-option-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; font-weight: 700; }
+.delivery-price { padding: .2rem .6rem; background: var(--color-cream-dark); border-radius: 999px; font-size: .85rem; white-space: nowrap; }
+.delivery-zone { font-weight: 700; color: var(--color-forest); }
+.delivery-option-description, .delivery-option-note { font-size: .9rem; line-height: 1.6; }
+.delivery-option-note { border-top: 1px solid var(--color-border-soft); padding-top: .65rem; }
+.delivery-tiers { display: grid; gap: .35rem; font-size: .85rem; }
+.delivery-tiers > span { display: flex; justify-content: space-between; gap: 1rem; }
+.checkout-delivery-summary { border-top: 1px solid var(--color-border-soft); padding: .75rem 0; }
+.checkout-delivery-summary > p:first-child { display: flex; justify-content: space-between; gap: .75rem; }
+#checkout-delivery-note { font-size: .85rem; }
+#checkout-submit:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 450px) {
+  .checkout-fieldset { padding: 1rem; }
+  .checkout-fieldset .delivery-option-card { padding-right: .75rem; }
+}

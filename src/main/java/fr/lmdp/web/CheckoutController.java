@@ -97,7 +97,9 @@ public class CheckoutController {
 
     private String prepareForm(Model model) {
         model.addAttribute("activePage", "panier");
-        model.addAttribute("shippingFee", shopProperties.shippingFee());
+        model.addAttribute("shippingUpToThree", fr.lmdp.order.ShippingRates.UP_TO_THREE);
+        model.addAttribute("shippingUpToFive", fr.lmdp.order.ShippingRates.UP_TO_FIVE);
+        model.addAttribute("shippingAboveFive", fr.lmdp.order.ShippingRates.ABOVE_FIVE);
         return "commande";
     }
 

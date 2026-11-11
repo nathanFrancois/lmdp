@@ -55,6 +55,11 @@
                 <dd th:text="${order.deliveryMethod.label}">Remise</dd>
             </dl>
 
+            <p th:if="${order.paid and order.status.name() != 'CANCELLED' and order.deliveryMethod.name() == 'PICKUP'}">
+                <strong>Remise en main propre — canton de Genève et Chablais (74) uniquement.</strong>
+                L’artisan vous contactera pour convenir des modalités et du lieu de rendez-vous.
+            </p>
+
             <div th:if="${order.shippingAddress != null}" class="order-address">
                 <h2 class="checkout-summary-title">Adresse de livraison</h2>
                 <p>
